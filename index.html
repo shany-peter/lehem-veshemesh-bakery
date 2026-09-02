@@ -83,8 +83,8 @@
         <dd>רחובות הרצל, מסדה, החלוץ, ביאליק והסמטאות שביניהם</dd>
       </div>
       <div class="delivery__item">
-        <dt>מועד אחרון להזמנה</dt>
-        <dd>עד 20:00 בערב שלפני</dd>
+        <dt>שעות ההזמנה</dt>
+        <dd>בין 07:00 ל־20:00, למשלוח למחרת בבוקר</dd>
       </div>
       <div class="delivery__item">
         <dt>מינימום הזמנה</dt>
@@ -233,10 +233,10 @@
       <p class="order__sub">
         המשלוח מגיע למחרת בבוקר, בשעות 07:00 עד 09:00, והתשלום במעמד המסירה.
       </p>
-      <p class="order__note">מינימום הזמנה 40 שקלים. מזמינים עד 20:00 בערב שלפני.</p>
+      <p class="order__note">מינימום הזמנה 40 שקלים. מזמינים בין 07:00 ל־20:00, והמשלוח מגיע למחרת בבוקר.</p>
     </div>
 
-    <form class="form">
+    <form class="form" id="order-form">
 
       <div class="field">
         <label for="name">שם</label>
@@ -300,7 +300,8 @@
         </div>
       </fieldset>
 
-      <button class="btn btn--solid" type="submit">שליחת ההזמנה</button>
+      <button class="btn btn--solid" type="submit" id="order-submit">שליחת ההזמנה</button>
+      <p class="form__status" id="order-status" role="status" aria-live="polite" hidden></p>
     </form>
   </div>
 </section>
@@ -335,6 +336,8 @@
     </dl>
   </div>
 </footer>
+
+<script src="assets/order.js" defer></script>
 
 </body>
 </html>

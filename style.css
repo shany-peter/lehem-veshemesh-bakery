@@ -727,3 +727,32 @@ a { color: var(--brick); }
   .delivery__title, .delivery__sub, .delivery__item dt { color: #000000; }
   .delivery__item { border-color: #999999; }
 }
+
+/* ---------- הודעת מצב של טופס ההזמנה ---------- */
+.form__status {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-right: 3px solid var(--clay);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+}
+
+.form__status--ok {
+  color: var(--ink);
+  border-right-color: var(--brick);
+}
+
+.form__status--error {
+  color: var(--brick-deep);
+  border-right-color: var(--crust);
+}
+
+.btn--solid:disabled {
+  background: var(--clay-pale);
+  color: var(--ink-soft);
+  cursor: default;
+}
