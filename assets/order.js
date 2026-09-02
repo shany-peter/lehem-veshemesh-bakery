@@ -204,7 +204,7 @@
         form.reset();
         say(
           'ההזמנה נקלטה בהצלחה. שלחנו אישור למייל ' + payload.email +
-          '. המשלוח ' + (data.delivery_date || 'מחר בבוקר') + ', בשעות 07:00 עד 09:00, ' +
+          '. המשלוח ' + (data.delivery_date || 'מחר בבוקר') + ', בשעות 06:30 עד 08:30, ' +
           'ולתשלום במסירה ' + (data.total != null ? data.total : total) + ' ₪.',
           'ok'
         );
