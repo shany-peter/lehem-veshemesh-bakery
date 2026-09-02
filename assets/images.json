@@ -1,0 +1,48 @@
+{
+  "_comment": "Cloudinary asset map for מאפיית לחם ושמש. 'url' already includes f_auto,q_auto — Cloudinary picks the best format and quality per browser. Local copies under assets/images/ are the originals.",
+  "cloudName": "j4gfglsu",
+  "baseUrl": "https://res.cloudinary.com/j4gfglsu/image/upload",
+  "defaultTransform": "f_auto,q_auto",
+
+  "logo": {
+    "name": "לוגו מאפיית לחם ושמש",
+    "publicId": "lehem-veshemesh-bakery/logo-lehem-veshemesh",
+    "local": "assets/images/logo/logo-lehem-veshemesh.jpg",
+    "url": "https://res.cloudinary.com/j4gfglsu/image/upload/f_auto,q_auto/lehem-veshemesh-bakery/logo-lehem-veshemesh.jpg"
+  },
+
+  "products": [
+    {
+      "id": "sourdough-country-loaf",
+      "name": "לחם כפרי מחמצת",
+      "alt": "כיכר לחם כפרי מחמצת עם קרום זהוב ופתחי אפייה, על צלחת קרמיקה",
+      "publicId": "lehem-veshemesh-bakery/products/sourdough-country-loaf",
+      "local": "assets/images/products/sourdough-country-loaf.jpg",
+      "url": "https://res.cloudinary.com/j4gfglsu/image/upload/f_auto,q_auto/lehem-veshemesh-bakery/products/sourdough-country-loaf.jpg"
+    },
+    {
+      "id": "rye-bread",
+      "name": "לחם שיפון",
+      "alt": "כיכר לחם שיפון כהה ועגולה על צלחת קרמיקה מנומשת",
+      "publicId": "lehem-veshemesh-bakery/products/rye-bread",
+      "local": "assets/images/products/rye-bread.jpg",
+      "url": "https://res.cloudinary.com/j4gfglsu/image/upload/f_auto,q_auto/lehem-veshemesh-bakery/products/rye-bread.jpg"
+    },
+    {
+      "id": "challah",
+      "name": "חלה לשישי",
+      "alt": "חלה קלועה מבריקה בגוון זהוב על צלחת לבנה",
+      "publicId": "lehem-veshemesh-bakery/products/challah",
+      "local": "assets/images/products/challah.jpg",
+      "url": "https://res.cloudinary.com/j4gfglsu/image/upload/f_auto,q_auto/lehem-veshemesh-bakery/products/challah.jpg"
+    },
+    {
+      "id": "cheese-bourekas",
+      "name": "בורקס גבינה",
+      "alt": "בורקס גבינה משולש מבצק עלים פריך עם שקדים פרוסים, לצד ספל קפה",
+      "publicId": "lehem-veshemesh-bakery/products/cheese-bourekas",
+      "local": "assets/images/products/cheese-bourekas.jpg",
+      "url": "https://res.cloudinary.com/j4gfglsu/image/upload/f_auto,q_auto/lehem-veshemesh-bakery/products/cheese-bourekas.jpg"
+    }
+  ]
+}
