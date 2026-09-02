@@ -84,7 +84,7 @@
       </div>
       <div class="delivery__item">
         <dt>שעות ההזמנה</dt>
-        <dd>בין 07:00 ל־20:00, למשלוח למחרת בבוקר</dd>
+        <dd>בשעות 07:00 עד 20:00, למשלוח למחרת בבוקר</dd>
       </div>
       <div class="delivery__item">
         <dt>מינימום הזמנה</dt>
@@ -233,7 +233,7 @@
       <p class="order__sub">
         המשלוח מגיע למחרת בבוקר, בשעות 07:00 עד 09:00, והתשלום במעמד המסירה.
       </p>
-      <p class="order__note">מינימום הזמנה 40 שקלים. מזמינים בין 07:00 ל־20:00, והמשלוח מגיע למחרת בבוקר.</p>
+      <p class="order__note">מינימום הזמנה 40 שקלים. מזמינים בשעות 07:00 עד 20:00, והמשלוח מגיע למחרת בבוקר.</p>
     </div>
 
     <form class="form" id="order-form">
@@ -299,6 +299,13 @@
                  min="0" step="1" value="0" inputmode="numeric" aria-label="כמות, בורקס גבינה">
         </div>
       </fieldset>
+
+      <!-- שדה מלכודת לבוטים. מוסתר מהעין ומהמקלדת, אדם לעולם לא ימלא אותו.
+           אם הוא מגיע מלא, ההזמנה לא נשלחת. -->
+      <div class="honeypot" aria-hidden="true">
+        <label for="lehem-note">הערה</label>
+        <input type="text" id="lehem-note" name="lehem-note" tabindex="-1" autocomplete="off">
+      </div>
 
       <button class="btn btn--solid" type="submit" id="order-submit">שליחת ההזמנה</button>
       <p class="form__status" id="order-status" role="status" aria-live="polite" hidden></p>

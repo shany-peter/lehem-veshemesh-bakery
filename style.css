@@ -728,6 +728,17 @@ a { color: var(--brick); }
   .delivery__item { border-color: #999999; }
 }
 
+/* שדה המלכודת. מוסתר בלי display none, כדי שבוט שקורא את ה DOM
+   ימלא אותו בכל זאת. אותה שיטה כמו קישור הדילוג, בלי לגרום לגלישה. */
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ---------- הודעת מצב של טופס ההזמנה ---------- */
 .form__status {
   margin: 0;
