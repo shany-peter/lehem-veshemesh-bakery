@@ -1,0 +1,639 @@
+/* ==========================================================================
+   קליטת חשבוניות
+   ממשיך את style.css של האתר. כל הצבעים, הפונטים והמרווחים מגיעים משם,
+   וכאן רק הרכיבים שקיימים בעמוד הזה בלבד.
+   ========================================================================== */
+
+:root {
+  /* שני גוונים שלא היו נחוצים באתר השיווקי, ושומרים על אותה משפחה חמה.
+     ירוק זית במקום ירוק רענן, כדי שלא ייראה כמו התראה של מערכת אחרת. */
+  --olive:      #5E7245;  /* נבדק ותקין */
+  --olive-pale: #E8EBDF;
+  --crust-pale: #F7E7CD;  /* רקע לדגל שדורש עין */
+}
+
+/* ---------- עוזרים ---------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- סרגל עליון ---------- */
+.topbar__tag {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+
+/* ---------- מעטפת ---------- */
+.intake { padding-block: 2.5rem 4rem; }
+
+.intake__head { margin-bottom: 2.5rem; }
+
+.intake__head h1 {
+  font-family: var(--display);
+  font-size: clamp(1.875rem, 7vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--brick-deep);
+}
+
+.intake__lede {
+  margin-top: 0.9rem;
+  color: var(--ink-soft);
+  max-width: 48ch;
+}
+
+/* ---------- שלב ---------- */
+.step { margin-bottom: 1rem; }
+
+.step__title {
+  font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+  margin-bottom: 1.25rem;
+}
+
+.step__lede {
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin-bottom: 1.5rem;
+}
+
+.step__foot {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* ---------- כפתורים נוספים ---------- */
+.btn--outline {
+  background: transparent;
+  color: var(--brick-deep);
+  border-color: var(--clay);
+}
+.btn--outline:hover { background: var(--paper-warm); }
+
+.btn--quiet {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: transparent;
+  padding-inline: 0.75rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn--quiet:hover { color: var(--brick); }
+
+.btn:disabled,
+.btn--outline:disabled {
+  background: var(--clay-pale);
+  color: var(--ink-soft);
+  border-color: transparent;
+  cursor: default;
+}
+
+/* ---------- אזור הגרירה ---------- */
+.drop {
+  background: var(--card);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.drop--over {
+  border-color: var(--clay);
+  background: var(--paper-warm);
+}
+
+.drop__text {
+  font-family: var(--display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.drop__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* בנייד הכפתורים על כל הרוחב, כי מצלמים בעמידה ובאצבע אחת */
+.drop__actions .btn { width: 100%; }
+
+.drop__hint {
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- רשימת הקבצים שנבחרו ---------- */
+.picked {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.picked__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.thumb {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius);
+  background: var(--paper-warm);
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
+/* תג ל־PDF, שאין לו תצוגה מקדימה */
+.thumb--pdf {
+  display: grid;
+  place-items: center;
+  font-family: var(--body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.picked__body { flex: 1; min-width: 0; }
+
+.picked__name {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.picked__meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.picked__drop {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-family: var(--body);
+  font-size: 0.875rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+.picked__drop:hover { border-color: var(--clay); color: var(--brick); }
+
+/* ---------- מד התקדמות ---------- */
+.meter {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.meter__count {
+  margin: 0 0 0.9rem;
+  font-family: var(--display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--brick-deep);
+}
+
+.meter__track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--paper-warm);
+  overflow: hidden;
+}
+
+.meter__fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--brick);
+  transition: width 0.3s linear;
+}
+
+.meter__note {
+  margin: 0.9rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- רשימת העבודה ---------- */
+.worklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.worklist__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.worklist__body { flex: 1; min-width: 0; }
+
+.worklist__name {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.worklist__state {
+  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.worklist__item--done .worklist__state { color: var(--olive); font-weight: 600; }
+.worklist__item--failed { border-color: var(--crust); }
+.worklist__item--failed .worklist__state { color: var(--brick); font-weight: 600; }
+
+/* ---------- כרטיסי האישור ---------- */
+.reviewlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.rev {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* חשבונית שדורשת עין מסומנת בפס בצד, לא בצבע רקע צועק */
+.rev--check  { border-inline-start: 4px solid var(--crust); }
+.rev--ok     { border-inline-start: 4px solid var(--olive); }
+.rev--failed { border-inline-start: 4px solid var(--brick); }
+
+.rev__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.rev__ident { flex: 1; min-width: 11rem; }
+
+.rev__supplier {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.rev__sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.rev__total {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--brick-deep);
+  white-space: nowrap;
+  direction: ltr;
+}
+
+.rev__badge {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+}
+
+.rev__badge--ok     { background: var(--olive-pale); color: var(--olive); }
+.rev__badge--check  { background: var(--crust-pale); color: #8A5A16; }
+.rev__badge--failed { background: var(--clay-pale); color: var(--brick-deep); }
+
+.rev__toggle {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-family: var(--body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.rev__toggle:hover { border-color: var(--clay); color: var(--brick); }
+
+.rev__open { border-top: 1px solid var(--line); padding: 1.25rem 1rem 1.5rem; }
+
+/* סיבת דחייה מהשרת. חזקה יותר מדגל, כי זו הסיבה שהשורה לא נשמרה */
+.rev__reject {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  background: var(--clay-pale);
+  border-inline-start: 3px solid var(--brick);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--brick-deep);
+}
+
+/* הסיבות שבגללן החשבונית סומנה */
+.rev__flags {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  background: var(--crust-pale);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rev__flag {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #6E4310;
+}
+
+.rev__grid { display: grid; gap: 1.25rem; }
+
+/* תמונת החשבונית לצד השדות, כדי שאפשר יהיה להשוות בלי לעזוב את העמוד */
+.rev__shot {
+  margin: 0;
+  background: var(--paper-warm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+}
+
+/* התמונה יושבת בתוך כפתור, כדי שההגדלה תהיה נגישה גם מהמקלדת */
+.rev__zoom {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 2px;
+}
+
+.rev__shot img {
+  width: 100%;
+  max-height: 26rem;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.rev__shot figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+/* ---------- הגדלת חשבונית ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(46, 33, 25, 0.94);
+  display: flex;
+  flex-direction: column;
+}
+
+/* חייב לבוא אחרי display:flex. כלל של הדף גובר על [hidden] של הדפדפן
+   גם כשהוא פחות ספציפי, ובלי השורה הזאת ההגדלה נפתחת עם טעינת העמוד. */
+.lightbox[hidden] { display: none; }
+
+.lightbox__bar {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+}
+
+.lightbox__btn {
+  font-family: var(--body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55rem 1.2rem;
+  cursor: pointer;
+}
+.lightbox__btn:hover { background: #FFFFFF; }
+
+.lightbox__stage {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 0 1rem 1rem;
+  /* גלילה בשתי הצירים בגודל מלא, בלי שהדפדפן יתפוס את המחווה */
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+.lightbox__stage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+  border-radius: 2px;
+}
+
+/* בגודל מלא התמונה בגודלה הטבעי והבמה נגללת. עיגון למעלה,
+   אחרת מרכוז חותך את ראש החשבונית ושם בדיוק יושב שם הספק. */
+.lightbox__stage--full { place-items: start center; }
+
+.lightbox__stage--full img {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  cursor: zoom-out;
+}
+
+/* נעילת גלילת הרקע כשההגדלה פתוחה */
+body.is-locked { overflow: hidden; }
+
+.rev__fields { display: grid; gap: 1rem; }
+
+.rev__pair { display: grid; gap: 1rem; }
+
+.rev__field { display: grid; gap: 0.35rem; }
+
+.rev__field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.rev__field input {
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.85rem;
+  width: 100%;
+}
+
+.rev__field input:focus { border-color: var(--clay); }
+
+/* שדה ששונה ביד מסומן, כדי שברור מה נקרא ומה תוקן */
+.rev__field input.is-edited {
+  border-color: var(--clay);
+  background: #FFFFFF;
+}
+
+.rev__field input[inputmode="decimal"] { direction: ltr; text-align: start; }
+
+/* שורת החשבון החי מתחת לשדות הסכום */
+.rev__math {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+
+.rev__math--ok {
+  background: var(--olive-pale);
+  border-color: #CFD8C0;
+  color: var(--olive);
+  font-weight: 600;
+}
+
+.rev__math--off {
+  background: var(--crust-pale);
+  border-color: #E8CFA4;
+  color: #8A5A16;
+  font-weight: 600;
+}
+
+.rev__failed {
+  padding: 1rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--brick-deep);
+}
+
+/* ---------- סיכום ---------- */
+.donelist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.donelist__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.donelist__item:last-child { border-bottom: 1px solid var(--line); }
+
+.donelist__who {
+  font-family: var(--display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.donelist__what {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.donelist__sum {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--brick-deep);
+  white-space: nowrap;
+  direction: ltr;
+}
+
+/* ---------- פוטר דק ---------- */
+.foot--slim { padding-block: 2rem; text-align: center; }
+.foot--slim .foot__tag { color: var(--clay-pale); }
+
+/* ==========================================================================
+   טאבלט ומעלה
+   ========================================================================== */
+@media (min-width: 40rem) {
+  .intake { padding-block: 3.5rem 5rem; }
+
+  .drop { padding: 3rem 2rem; }
+  .drop__actions .btn { width: auto; }
+
+  .rev__pair { grid-template-columns: 1fr 1fr 1fr; }
+
+  .rev__math { grid-column: 1 / -1; }
+}
+
+@media (min-width: 64rem) {
+  /* התמונה בצד השדות רק כשיש מקום אמיתי לשתיהן */
+  .rev__grid {
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 2rem;
+    align-items: start;
+  }
+}

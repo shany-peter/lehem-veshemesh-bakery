@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>קליטת חשבוניות | מאפיית לחם ושמש</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="invoices.css">
+</head>
+<body>
+
+<a class="skip" href="#pick">דילוג לבחירת הקבצים</a>
+
+<!-- ========== סרגל עליון, זהה לאתר ========== -->
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="topbar__brand" href="../index.html">
+      <img class="topbar__mark"
+           src="https://res.cloudinary.com/j4gfglsu/image/upload/e_trim/c_crop,g_north,w_1.0,h_0.66/e_make_transparent:12/f_png,q_auto,w_160/lehem-veshemesh-bakery/logo-lehem-veshemesh.jpg"
+           alt="" width="160" height="107">
+      <span>לחם ושמש</span>
+    </a>
+    <p class="topbar__tag">קליטת חשבוניות</p>
+  </div>
+</header>
+
+<main class="intake">
+  <div class="wrap">
+
+    <div class="intake__head">
+      <p class="eyebrow">פנימי</p>
+      <h1>קליטת חשבוניות</h1>
+      <p class="intake__lede">
+        מצלמים את החשבונית או בוחרים קובץ, והמערכת קוראת ממנה את הספק, התאריך והסכום.
+        לפני שהשורה נשמרת בגיליון היא מוצגת כאן לאישור.
+      </p>
+    </div>
+
+    <!-- ================= שלב 1, בחירת קבצים ================= -->
+    <section class="step" id="pick" aria-labelledby="pick-title">
+      <h2 class="step__title" id="pick-title">בחירת חשבוניות</h2>
+
+      <div class="drop" id="drop">
+        <p class="drop__text">אפשר לגרור לכאן קבצים, או לבחור מהכפתורים</p>
+        <div class="drop__actions">
+          <button class="btn btn--solid" type="button" id="btn-camera">צילום חשבונית</button>
+          <button class="btn btn--outline" type="button" id="btn-browse">בחירת קבצים</button>
+        </div>
+        <p class="drop__hint">תמונות ו־PDF, עד 25 מגה לקובץ</p>
+      </div>
+
+      <!-- שני שדות נפרדים. capture פותח מצלמה ישירות, ובלעדיו נפתחת גלריית הקבצים.
+           בטלפון שדה אחד עם capture מסתיר את האפשרות לבחור קובץ קיים, ולכן שניים. -->
+      <input class="visually-hidden" type="file" id="file-camera"
+             accept="image/*" capture="environment" multiple>
+      <input class="visually-hidden" type="file" id="file-browse"
+             accept="image/*,application/pdf" multiple>
+
+      <ul class="picked" id="picked"></ul>
+
+      <p class="form__status" id="pick-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="step__foot">
+        <button class="btn btn--solid" type="button" id="btn-upload" disabled>העלאה</button>
+        <button class="btn btn--quiet" type="button" id="btn-clear" hidden>ניקוי הרשימה</button>
+      </div>
+    </section>
+
+    <!-- ================= שלב 2, קריאה ================= -->
+    <section class="step" id="work" aria-labelledby="work-title" hidden>
+      <h2 class="step__title" id="work-title">המערכת קוראת את החשבוניות</h2>
+
+      <div class="meter">
+        <p class="meter__count" id="work-count">נקראו 0 מתוך 0</p>
+        <div class="meter__track" role="progressbar" id="work-bar"
+             aria-labelledby="work-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="meter__fill" id="work-fill"></span>
+        </div>
+        <p class="meter__note" id="work-note">שולחים את הקבצים</p>
+      </div>
+
+      <ul class="worklist" id="worklist"></ul>
+
+      <p class="form__status" id="work-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="step__foot">
+        <button class="btn btn--outline" type="button" id="btn-recheck" hidden>בדיקה שוב</button>
+      </div>
+    </section>
+
+    <!-- ================= שלב 3, אישור ================= -->
+    <section class="step" id="review" aria-labelledby="review-title" hidden>
+      <h2 class="step__title" id="review-title">אישור לפני שמירה</h2>
+      <p class="step__lede" id="review-lede"></p>
+
+      <ul class="reviewlist" id="reviewlist"></ul>
+
+      <p class="form__status" id="review-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="step__foot">
+        <button class="btn btn--solid" type="button" id="btn-confirm">אישור ושמירה בגיליון</button>
+      </div>
+    </section>
+
+    <!-- ================= שלב 4, סיום ================= -->
+    <section class="step" id="done" aria-labelledby="done-title" hidden>
+      <h2 class="step__title" id="done-title">נשמר</h2>
+      <p class="step__lede" id="done-lede"></p>
+      <ul class="donelist" id="donelist"></ul>
+      <div class="step__foot">
+        <button class="btn btn--solid" type="button" id="btn-again">קליטת חשבוניות נוספות</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ========== הגדלת חשבונית ==========
+     נפתח מלחיצה על התמונה בכרטיס האישור. בלי זה אי אפשר לקרוא
+     את הספרות שצריך לאשר, וזו כל הנקודה של המסך הזה. -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="החשבונית בהגדלה" hidden>
+  <div class="lightbox__bar">
+    <button class="lightbox__btn" type="button" id="lb-zoom">גודל מלא</button>
+    <button class="lightbox__btn" type="button" id="lb-close">סגירה</button>
+  </div>
+  <div class="lightbox__stage" id="lb-stage">
+    <img id="lb-img" alt="">
+  </div>
+</div>
+
+<footer class="foot foot--slim">
+  <div class="wrap">
+    <p class="foot__tag">מאפיית לחם ושמש, עמוד פנימי</p>
+  </div>
+</footer>
+
+<script src="invoices.js" defer></script>
+
+</body>
+</html>
