@@ -21,6 +21,10 @@
   var UPLOAD_URL  = BASE + '/parse-submit';
   var STATUS_URL  = BASE + '/parse-status';
   var CONFIRM_URL = BASE + '/send-invoice-approval';
+  /* קריאה רביעית, אחרי שכל האצווה נשמרה. האישור נשלח חשבונית בכל
+     קריאה, ולכן אף הרצה שם לא מכירה את שאר האצווה ולא יכולה לסכם
+     אותה. הדפדפן הוא היחיד שרואה את התמונה המלאה, והוא שולח אותה. */
+  var SUMMARY_URL = BASE + '/batch-done';
 
   var MAX_FILES = 30;
   var MAX_FILE_BYTES = 25 * 1024 * 1024;
@@ -1112,10 +1116,39 @@
       }
 
       say(els.reviewStatus, '');
+      sendSummary(saved);
       buildDone();
       show('done');
     });
   });
+
+  /* הסיכום נשלח אחרי שהכול נשמר, ובכוונה בלי await ובלי חסימה:
+     ההודעה שהחשבוניות נשמרו כבר נכונה, ומייל שלא יצא הוא לא סיבה
+     להחזיק את איריס במסך. כישלון כאן נרשם בקונסול ונגמר. */
+  function sendSummary(saved) {
+    if (!saved.length) return;
+
+    var payload = {
+      batch_id: batchId,
+      saved_count: saved.length,
+      invoices: saved.map(function (item) {
+        var row = item.savedRow || {};
+        return {
+          supplier: row.supplier || '',
+          invoice_number: row.invoice_number || '',
+          date: row.date || '',
+          total: row.total === null || row.total === undefined ? '' : String(row.total),
+          edited: row.edited || []
+        };
+      })
+    };
+
+    fetch(SUMMARY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(function () { /* המייל הוא תוצר לוואי, לא חלק מהשמירה */ });
+  }
 
   /* ========================= שלב 4, סיום ========================= */
 
