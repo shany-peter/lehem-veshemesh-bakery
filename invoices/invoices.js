@@ -938,6 +938,11 @@
       subtotal: toNumber(val('subtotal')),
       vat: toNumber(val('vat')),
       total: toNumber(val('total')),
+      /* הח.פ. נוסע איתנו אבל אין לו שדה במסך. הוא נקרא בהרצת הקריאה,
+         והכתיבה לגיליון קורית בהרצת האישור, ולכן הדפדפן הוא המוביל
+         היחיד בין השתיים. איריס לא מאמתת אותו, ולכן הוא לא מעורבב
+         עם הערכים שכן עברו את עינה ולא נכנס ל-edited. */
+      supplier_tax_id: (item.data && item.data.supplier_tax_id) || '',
       edited: Object.keys(item.edited)
     };
   }
@@ -960,6 +965,7 @@
     form.append('subtotal', row.subtotal === null ? '' : String(row.subtotal));
     form.append('vat', row.vat === null ? '' : String(row.vat));
     form.append('total', row.total === null ? '' : String(row.total));
+    form.append('supplier_tax_id', row.supplier_tax_id || '');
     form.append('edited', row.edited.join(','));
     form.append('client_index', String(index + 1));
     form.append('client_total', String(total));

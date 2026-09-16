@@ -93,6 +93,7 @@ static data. זה יתרון אמיתי של המבנה שנבנה, ובניתי
   "confidence": 0.94,
   "data": {
     "supplier": "מאפיות הדר בע\"מ",
+    "supplier_tax_id": "514598234",
     "invoice_number": "10427",
     "date": "2026-09-11",
     "subtotal": 420.00,
@@ -112,8 +113,12 @@ static data. זה יתרון אמיתי של המבנה שנבנה, ובניתי
 | `COMPLETED` | נקראה |
 | `FAILED`, `CANCELLED` | לא נקראה |
 
-**`data`** — שישה שדות. `date` בפורמט `YYYY-MM-DD` כי הוא נכנס ל־`<input type="date">`.
+**`data`** — שבעה שדות. `date` בפורמט `YYYY-MM-DD` כי הוא נכנס ל־`<input type="date">`.
 שדה חסר מותר, הוא יוצג ריק ואיריס תמלא. גם `data` שלם חסר מותר.
+
+`supplier_tax_id` הוא היוצא מן הכלל: הוא לא מוצג בעמוד ואי אפשר לערוך אותו.
+הוא נקרא בהרצת הקריאה, והכתיבה לגיליון קורית בהרצת האישור, ולכן הדפדפן
+מחזיק אותו ומחזיר אותו כמו שהוא. ספרות בלבד, בלי מקפים ובלי רווחים.
 
 **`confidence`** — 0 עד 1. מתחת ל־0.85 הכרטיס נפתח אוטומטית.
 
@@ -143,6 +148,7 @@ static data. זה יתרון אמיתי של המבנה שנבנה, ובניתי
 | `subtotal` | מספר כמחרוזת, או ריק |
 | `vat` | מספר כמחרוזת, או ריק |
 | `total` | מספר כמחרוזת, או ריק |
+| `supplier_tax_id` | ספרות בלבד, כפי שחזר מהקריאה. איריס לא נגעה בו |
 | `edited` | שמות השדות ששונו ביד, מחוברים בפסיקים. ריק אם לא נגעה |
 | `client_index`, `client_total` | 1 מתוך 9 וכולי |
 
@@ -191,6 +197,7 @@ Sheets כדאי להדליק `attemptToConvertTypes`, אחרת `495.6` ייכת�
 |---|---|
 | `Date` | `={{ $json.body.date }}` |
 | `Supplier` | `={{ $json.body.supplier }}` |
+| `Supplier_tax_id` | `={{ $json.body.supplier_tax_id }}` |
 | `Invoice_number` | `={{ $json.body.invoice_number }}` |
 | `Amount_before_vat` | `={{ $json.body.subtotal }}` |
 | `Amount_after_vat` | `={{ $json.body.total }}` |
