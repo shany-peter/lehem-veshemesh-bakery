@@ -64,6 +64,7 @@
     validating: 'נבדקת',
     ready:      'נקראה',
     saved:      'נשמרה',
+    duplicate:  'כבר בגיליון',
     failed:     'לא נקראה'
   };
 
@@ -896,7 +897,7 @@
           big.addEventListener('click', function () { lbOpen(src, alt, big, true); });
         }
 
-        shot = h('figure', { class: 'rev__shot' }, [
+        shot = h('figure', { class: 'rev__shot rev__shot--doc' }, [
           doc,
           h('div', { class: 'rev__docbar' }, [
             big,
@@ -1044,9 +1045,22 @@
       return res.json();
     }).then(function (data) {
       var out = Array.isArray(data) ? data[0] : data;
+
+      /* כפילות היא תשובה סופית ולא תקלה. ניסיון חוזר ייענה בדיוק אותו
+         דבר, ולכן היא מקבלת מצב משלה: היא יוצאת מרשימת המועמדות
+         לשליחה, לא חוסמת את המעבר למסך הסיום, ומדווחת במייל בנפרד.
+         בלי ההבחנה הזאת אצווה עם כפילות אחת הייתה נתקעת במסך האישור
+         בלולאה שאי אפשר לצאת ממנה. */
+      if (out && out.code === 'duplicate') {
+        item.state = 'duplicate';
+        item.savedRow = row;
+        item.confirmError = out.error || 'החשבונית כבר נמצאת בגיליון.';
+        return;
+      }
+
       if (!out || out.ok !== true) {
-        /* דחייה מנומקת, למשל כפילות. ההסבר של הוורקפלואו נשמר ומוצג
-           על הכרטיס, כי הוא נכתב בשביל איריס ולא בשביל הלוג. */
+        /* דחייה מנומקת אחרת. ההסבר של הוורקפלואו נשמר ומוצג על
+           הכרטיס, כי הוא נכתב בשביל איריס ולא בשביל הלוג. */
         var rejected = new Error('rejected');
         rejected.info = out && out.error;
         throw rejected;
@@ -1094,6 +1108,16 @@
     chain.then(function () {
       busy = false;
       var saved = items.filter(function (it) { return it.state === 'saved'; });
+      var dups = items.filter(function (it) { return it.state === 'duplicate'; });
+
+      /* אצווה שכולה כפילויות סגורה, לא כושלת. אין מה לנסות שוב. */
+      if (!saved.length && dups.length && !failedNow) {
+        say(els.reviewStatus, '');
+        sendSummary(saved, dups);
+        buildDone();
+        show('done');
+        return;
+      }
 
       if (!saved.length) {
         els.btnConfirm.disabled = false;
@@ -1116,7 +1140,7 @@
       }
 
       say(els.reviewStatus, '');
-      sendSummary(saved);
+      sendSummary(saved, dups);
       buildDone();
       show('done');
     });
@@ -1125,22 +1149,25 @@
   /* הסיכום נשלח אחרי שהכול נשמר, ובכוונה בלי await ובלי חסימה:
      ההודעה שהחשבוניות נשמרו כבר נכונה, ומייל שלא יצא הוא לא סיבה
      להחזיק את איריס במסך. כישלון כאן נרשם בקונסול ונגמר. */
-  function sendSummary(saved) {
-    if (!saved.length) return;
+  function sendSummary(saved, dups) {
+    dups = dups || [];
+    if (!saved.length && !dups.length) return;
+
+    function line(item) {
+      var row = item.savedRow || {};
+      return {
+        supplier: row.supplier || '',
+        invoice_number: row.invoice_number || '',
+        date: row.date || '',
+        total: row.total === null || row.total === undefined ? '' : String(row.total)
+      };
+    }
 
     var payload = {
       batch_id: batchId,
       saved_count: saved.length,
-      invoices: saved.map(function (item) {
-        var row = item.savedRow || {};
-        return {
-          supplier: row.supplier || '',
-          invoice_number: row.invoice_number || '',
-          date: row.date || '',
-          total: row.total === null || row.total === undefined ? '' : String(row.total),
-          edited: row.edited || []
-        };
-      })
+      invoices: saved.map(line),
+      duplicates: dups.map(line)
     };
 
     fetch(SUMMARY_URL, {
@@ -1175,9 +1202,20 @@
 
     var sum = rows.reduce(function (acc, row) { return acc + (row.total || 0); }, 0);
     var failed = items.filter(function (it) { return it.state === 'failed'; }).length;
+    var dups = items.filter(function (it) { return it.state === 'duplicate'; }).length;
 
-    var text = plural(rows.length, 'חשבונית אחת נשמרה', '% חשבוניות נשמרו') +
-      ' בגיליון ובדרייב, בסך הכל ' + fmtMoney(sum) + '.';
+    var text = rows.length
+      ? plural(rows.length, 'חשבונית אחת נשמרה', '% חשבוניות נשמרו') +
+        ' בגיליון ובדרייב, בסך הכל ' + fmtMoney(sum) + '.'
+      : 'לא נשמרה אף חשבונית חדשה.';
+
+    /* כפילות היא לא כישלון ולא הצלחה, ולכן היא נאמרת בנפרד. בלי זה
+       איריס הייתה רואה "נשמרו 2" אחרי שהעלתה 3, בלי לדעת מה קרה לשלישית. */
+    if (dups) {
+      text += ' ' + plural(dups,
+        'חשבונית אחת לא נשמרה כי היא כבר בגיליון.',
+        '% חשבוניות לא נשמרו כי הן כבר בגיליון.');
+    }
     if (failed) {
       text += ' ' + plural(failed,
         'חשבונית אחת לא נקראה וכדאי לצלם אותה שוב.',
