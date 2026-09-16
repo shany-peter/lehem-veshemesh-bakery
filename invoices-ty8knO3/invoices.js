@@ -793,6 +793,7 @@
     item.inputs = {};
     var card = h('li', {
       class: 'rev ' + (item.state === 'failed' ? 'rev--failed'
+                     : item.state === 'skipped' ? 'rev--skipped'
                      : (item.state === 'saved' || !eye) ? 'rev--ok' : 'rev--check')
     });
 
@@ -800,9 +801,12 @@
     var d = (item.state === 'saved' ? item.savedRow : item.data) || {};
     var totalText = d.total !== null && d.total !== undefined ? fmtMoney(Number(d.total)) : '—';
 
-    var badgeClass = item.state === 'failed' ? 'failed' : (item.state === 'saved' || !eye) ? 'ok' : 'check';
+    var badgeClass = item.state === 'failed' ? 'failed'
+                   : item.state === 'skipped' ? 'skip'
+                   : (item.state === 'saved' || !eye) ? 'ok' : 'check';
     var badgeText = item.state === 'failed' ? 'לא נקראה'
                   : item.state === 'saved' ? 'נשמרה'
+                  : item.state === 'skipped' ? 'לא תישמר'
                   : eye ? 'דורש עין' : 'נבדק';
 
     var head = h('div', { class: 'rev__head' }, [
@@ -823,6 +827,25 @@
     /* נשמרה כבר. לא ניתנת לעריכה, כדי שלחיצה חוזרת על האישור לא תיצור
        שורה כפולה בגיליון. */
     if (item.state === 'saved') return card;
+
+    /* הוצאה מהשמירה. קובץ שאינו חשבונית חוזר ריק, ובלי דרך להוציא
+       אותו הוא מחזיק את כל האצווה כבן ערובה: הבדיקה דורשת סה״כ, והוא
+       לא יקבל סה״כ לעולם. זו פעולה הפיכה, ולכן כפתור ולא מחיקה. */
+    if (item.state === 'skipped') {
+      card.appendChild(h('p', {
+        class: 'rev__failed',
+        text: 'הוצאה מהשמירה ולא תיכנס לגיליון.'
+      }));
+      var back = h('button', {
+        class: 'rev__toggle', type: 'button', text: 'להחזיר לשמירה'
+      });
+      back.addEventListener('click', function () {
+        item.state = 'ready';
+        buildReview();
+      });
+      card.appendChild(back);
+      return card;
+    }
 
     if (item.state === 'failed') {
       card.appendChild(h('p', {
@@ -927,7 +950,11 @@
       }
     }
 
-    open.appendChild(h('div', { class: 'rev__grid' }, [shot, fields]));
+    /* PDF מקבל עמודה רחבה יותר מתמונה. הצופה המובנה של הדפדפן הוא
+       יישום עם סרגל כלים משלו, ובעמודה צרה הוא נחנק. */
+    open.appendChild(h('div', {
+      class: 'rev__grid' + (item.isPdf ? ' rev__grid--doc' : '')
+    }, [shot, fields]));
     card.appendChild(open);
 
     var toggle = h('button', {
@@ -942,6 +969,15 @@
     });
     head.appendChild(toggle);
 
+    var skip = h('button', {
+      class: 'rev__toggle rev__toggle--skip', type: 'button', text: 'לא לשמור את זו'
+    });
+    skip.addEventListener('click', function () {
+      item.state = 'skipped';
+      buildReview();
+    });
+    head.appendChild(skip);
+
     recheck();
     return card;
   }
@@ -952,7 +988,8 @@
     /* מה שדורש עין עולה למעלה, כדי שהעבודה תהיה בתחילת המסך ולא בסופו.
        חשבונית שנכשלה יורדת לתחתית, כי אין עליה מה לעשות עכשיו. */
     function rank(item) {
-      if (item.state === 'failed') return 3;
+      if (item.state === 'failed') return 4;
+      if (item.state === 'skipped') return 3;
       if (item.state === 'saved') return 2;
       return needsEye(item) ? 0 : 1;
     }
@@ -985,6 +1022,12 @@
       parts.push(plural(failed,
         'חשבונית אחת לא נקראה ולא תישמר.',
         '% חשבוניות לא נקראו ולא יישמרו.'));
+    }
+    var skipped = items.filter(function (it) { return it.state === 'skipped'; }).length;
+    if (skipped) {
+      parts.push(plural(skipped,
+        'אחת הוצאה מהשמירה.',
+        '% הוצאו מהשמירה.'));
     }
 
     els.reviewLede.textContent = parts.join(' ');

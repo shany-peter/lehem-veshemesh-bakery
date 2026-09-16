@@ -371,6 +371,7 @@
 }
 
 .rev__badge--ok     { background: var(--olive-pale); color: var(--olive); }
+.rev__badge--skip   { background: var(--clay-pale); color: var(--brick-deep); }
 .rev__badge--check  { background: var(--crust-pale); color: #8A5A16; }
 .rev__badge--failed { background: var(--clay-pale); color: var(--brick-deep); }
 
@@ -386,6 +387,17 @@
   cursor: pointer;
   flex: 0 0 auto;
 }
+
+/* הוצאה מהשמירה היא פעולה הרסנית לכרטיס הזה, ולכן היא לא נראית
+   כמו "פתיחה לעריכה" שלידה. הפיכה, אבל לא בהיסח הדעת. */
+.rev__toggle--skip {
+  border-color: var(--clay-pale);
+  color: var(--brick);
+}
+.rev__toggle--skip:hover { background: var(--paper-warm); }
+
+/* כרטיס שהוצא מהשמירה. עמום, ועדיין קריא, כי צריך לראות מה הוצא. */
+.rev--skipped { opacity: 0.66; }
 .rev__toggle:hover { border-color: var(--clay); color: var(--brick); }
 
 .rev__open { border-top: 1px solid var(--line); padding: 1.25rem 1rem 1.5rem; }
@@ -737,11 +749,11 @@ body.is-docked {
     align-items: start;
   }
 
-  /* PDF הוא היוצא מן הכלל: הוא צריך רוחב אמיתי כדי להיות קריא, ולכן
-     הוא תופס את שתי העמודות והשדות יורדים מתחתיו. להשוואה צד לצד יש
-     את כפתור ההגדלה, שפותח אותו על חצי מסך לצד השדות. */
-  .rev__grid > .rev__shot--doc { grid-column: 1 / -1; }
-  .rev__shot--doc .rev__pdf { height: 32rem; }
+  /* PDF יושב לצד השדות כמו תמונה, אבל בעמודה שווה ולא בשליש.
+     הצופה המובנה של הדפדפן הוא יישום עם סרגל כלים משלו, ובעמודה
+     צרה מדי הוא לא מרנדר את הדף בכלל. */
+  .rev__grid--doc { grid-template-columns: 1fr 1fr; }
+  .rev__grid--doc .rev__pdf { height: 32rem; }
 
   /* מכאן ומעלה ההגדלה עוברת מחצי עליון לחצי ימני. חשבונית היא מסמך
      לאורך, וחצי מסך לגובה מראה ממנה הרבה יותר מחצי לרוחב.
