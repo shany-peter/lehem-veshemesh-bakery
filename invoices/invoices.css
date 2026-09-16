@@ -13,6 +13,14 @@
 }
 
 /* ---------- עוזרים ---------- */
+
+/* כל כלל display של הדף גובר על [hidden] של הדפדפן, גם כשהוא פחות
+   ספציפי. ל-.btn יש display: inline-block ב-style.css, ולכן כפתור
+   שנכתב <button hidden> פשוט הוצג. זה תפס אותנו פעמיים, פעם אחת
+   בהגדלה ופעם אחת בכפתור "בדיקה שוב", ולכן הכלל כאן גלובלי ולא
+   נקודתי למחלקה. כל אלמנט עם hidden באמת מוסתר, בלי יוצא מן הכלל. */
+[hidden] { display: none !important; }
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -437,19 +445,30 @@
   text-align: center;
 }
 
-/* ---------- הגדלת חשבונית ---------- */
+/* ---------- הגדלת חשבונית ----------
+   לוח מעוגן, לא שכבה שמכסה. מספר חשבונית הוא תשע ספרות ויותר, ובמודאל
+   מלא צריך לזכור אותו בעל פה, לסגור את ההגדלה, ורק אז להקליד. כאן
+   התמונה תופסת חצי מסך והשדות נשארים גלויים ופעילים לצידה, ולכן
+   אפשר להעתיק ספרה ספרה. שאר העמוד ממשיך לגלול כרגיל. */
 .lightbox {
   position: fixed;
-  inset: 0;
   z-index: 50;
-  background: rgba(46, 33, 25, 0.94);
+  background: rgba(46, 33, 25, 0.97);
   display: flex;
   flex-direction: column;
+  /* נייד: חצי עליון. dvh ולא vh, אחרת סרגל הדפדפן חותך את התחתית.
+     vh נשאר קודם כנפילה לדפדפנים שלא מכירים dvh. */
+  inset: 0 0 auto 0;
+  height: 50vh;
+  height: 50dvh;
+  border-bottom: 3px solid var(--clay);
 }
 
-/* חייב לבוא אחרי display:flex. כלל של הדף גובר על [hidden] של הדפדפן
-   גם כשהוא פחות ספציפי, ובלי השורה הזאת ההגדלה נפתחת עם טעינת העמוד. */
-.lightbox[hidden] { display: none; }
+/* הדחיפה של העמוד עצמו, כדי שהלוח לא יכסה את ראש התוכן */
+body.is-docked {
+  padding-top: 50vh;
+  padding-top: 50dvh;
+}
 
 .lightbox__bar {
   flex: 0 0 auto;
@@ -502,8 +521,8 @@
   cursor: zoom-out;
 }
 
-/* נעילת גלילת הרקע כשההגדלה פתוחה */
-body.is-locked { overflow: hidden; }
+/* אין כאן נעילת גלילה. הרקע חייב להישאר נגלל, אחרת אי אפשר להגיע
+   לשדה שנמצא מתחת לקצה המסך בזמן שהתמונה פתוחה. */
 
 .rev__fields { display: grid; gap: 1rem; }
 
@@ -635,5 +654,21 @@ body.is-locked { overflow: hidden; }
     grid-template-columns: 0.85fr 1.15fr;
     gap: 2rem;
     align-items: start;
+  }
+
+  /* מכאן ומעלה ההגדלה עוברת מחצי עליון לחצי שמאלי. חשבונית היא
+     מסמך לאורך, וחצי מסך לגובה מראה ממנה הרבה יותר מחצי לרוחב.
+     העמוד נדחף ימינה, כי הכיוון כאן rtl והתוכן מתחיל מימין. */
+  .lightbox {
+    inset: 0 auto 0 0;
+    width: 50vw;
+    height: auto;
+    border-bottom: 0;
+    border-right: 3px solid var(--clay);
+  }
+
+  body.is-docked {
+    padding-top: 0;
+    padding-left: 50vw;
   }
 }

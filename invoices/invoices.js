@@ -145,7 +145,12 @@
 
   /* ========================= הגדלת חשבונית =========================
      התמונה בכרטיס קטנה מכדי לקרוא ממנה ספרות, וזו בדיוק העבודה
-     שמסך האישור מבקש. שני מצבים: התאמה למסך, וגודל טבעי עם גלילה. */
+     שמסך האישור מבקש. שני מצבים: התאמה למסך, וגודל טבעי עם גלילה.
+
+     ההגדלה נפתחת כלוח מעוגן על חצי מסך, ולא כמודאל שמכסה הכול,
+     ולכן השדות נשארים גלויים ואפשר להקליד מהתמונה ישירות. מכאן
+     נובעות שלוש התנהגויות: אין נעילת גלילה, אין חטיפת מיקוד,
+     ולחיצה מחוץ לתמונה לא סוגרת. */
 
   var lb = $('lightbox');
   var lbImg = $('lb-img');
@@ -167,27 +172,32 @@
     lbImg.alt = alt || '';
     lbSetZoom(false);
     lb.hidden = false;
-    document.body.classList.add('is-locked');
-    lbClose.focus();
+    document.body.classList.add('is-docked');
+    /* בכוונה בלי focus כאן. הלוח נפתח כדי שאפשר יהיה להקליד מולו,
+       וחטיפת המיקוד לכפתור הסגירה מוציאה את הסמן מהשדה. */
   }
 
   function lbHide() {
     if (lb.hidden) return;
+    /* מחזירים מיקוד רק אם הוא באמת בתוך הלוח. בלי הבדיקה, Escape
+       בזמן הקלדה בשדה היה קופץ מהשדה חזרה לכפתור התמונה. */
+    var insideLb = lb.contains(document.activeElement);
     lb.hidden = true;
     lbImg.removeAttribute('src');
-    document.body.classList.remove('is-locked');
-    /* מחזירים את המיקוד לתמונה שממנה נפתח, כדי שמקלדת לא תאבד את המקום */
-    if (lbOpener) { lbOpener.focus(); lbOpener = null; }
+    document.body.classList.remove('is-docked');
+    if (lbOpener) {
+      if (insideLb) lbOpener.focus();
+      lbOpener = null;
+    }
   }
 
   lbClose.addEventListener('click', lbHide);
   lbZoom.addEventListener('click', function () { lbSetZoom(!lbFull); });
   lbImg.addEventListener('click', function () { lbSetZoom(!lbFull); });
 
-  /* לחיצה על הרקע סוגרת, לחיצה על התמונה עצמה לא */
-  lb.addEventListener('click', function (event) {
-    if (event.target === lb || event.target === lbStage) lbHide();
-  });
+  /* אין כאן סגירה בלחיצה מחוץ לתמונה. הלוח צמוד לשדות שעורכים,
+     ולחיצה שמחטיאה את קצה התמונה הייתה סוגרת אותו באמצע העבודה.
+     סוגרים בכפתור או ב-Escape, שניהם מפורשים. */
 
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') lbHide();

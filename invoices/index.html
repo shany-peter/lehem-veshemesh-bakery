@@ -121,8 +121,12 @@
 
 <!-- ========== הגדלת חשבונית ==========
      נפתח מלחיצה על התמונה בכרטיס האישור. בלי זה אי אפשר לקרוא
-     את הספרות שצריך לאשר, וזו כל הנקודה של המסך הזה. -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="החשבונית בהגדלה" hidden>
+     את הספרות שצריך לאשר, וזו כל הנקודה של המסך הזה.
+
+     לוח מעוגן על חצי מסך ולא מודאל: שאר העמוד נשאר גלוי ופעיל,
+     כדי שאפשר יהיה להקליד מהתמונה לשדות בלי לסגור אותה. לכן
+     aria-modal הוא false, אחרת קורא מסך היה מכריז שכל השאר חסום. -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="false" aria-label="החשבונית בהגדלה" hidden>
   <div class="lightbox__bar">
     <button class="lightbox__btn" type="button" id="lb-zoom">גודל מלא</button>
     <button class="lightbox__btn" type="button" id="lb-close">סגירה</button>
