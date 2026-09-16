@@ -681,6 +681,14 @@ body.is-docked {
   padding-block: 0.9rem;
   border-top: 1px solid var(--line);
 }
+
+/* חשבונית שכבר הייתה בגיליון. מוצגת עמומה כדי שיהיה ברור במבט אחד
+   שהיא לא נוספה, ובכל זאת מוצגת, כי מי שהעלה אותה צריך לדעת מה קרה לה. */
+.donelist__item--dup {
+  opacity: 0.62;
+  border-inline-start: 3px solid var(--clay-pale);
+  padding-inline-start: 0.75rem;
+}
 .donelist__item:last-child { border-bottom: 1px solid var(--line); }
 
 .donelist__who {

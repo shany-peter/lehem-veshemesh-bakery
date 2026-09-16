@@ -149,7 +149,8 @@
     btnRecheck: $('btn-recheck'),
     reviewLede: $('review-lede'), reviewlist: $('reviewlist'),
     reviewStatus: $('review-status'), btnConfirm: $('btn-confirm'),
-    doneLede: $('done-lede'), donelist: $('donelist'), btnAgain: $('btn-again')
+    doneTitle: $('done-title'), doneLede: $('done-lede'),
+    donelist: $('donelist'), btnAgain: $('btn-again')
   };
 
   function show(step) {
@@ -1186,36 +1187,53 @@
       .filter(function (it) { return it.state === 'saved'; })
       .map(function (it) { return it.savedRow; });
 
-    rows.forEach(function (row) {
-      els.donelist.appendChild(h('li', { class: 'donelist__item' }, [
+    var dupItems = items.filter(function (it) { return it.state === 'duplicate'; });
+
+    function line(row, isDup) {
+      return h('li', { class: 'donelist__item' + (isDup ? ' donelist__item--dup' : '') }, [
         h('div', {}, [
           h('p', { class: 'donelist__who', text: row.supplier || 'ללא שם ספק' }),
           h('p', {
             class: 'donelist__what',
-            text: [row.date, row.invoice_number ? 'חשבונית ' + row.invoice_number : '']
+            text: [row.date, row.invoice_number ? 'חשבונית ' + row.invoice_number : '',
+              isDup ? 'כבר בגיליון, לא נשמרה שוב' : '']
               .filter(Boolean).join('  ·  ')
           })
         ]),
         h('p', { class: 'donelist__sum', text: fmtMoney(row.total) })
-      ]));
+      ]);
+    }
+
+    rows.forEach(function (row) { els.donelist.appendChild(line(row, false)); });
+    dupItems.forEach(function (it) {
+      els.donelist.appendChild(line(it.savedRow || {}, true));
     });
 
     var sum = rows.reduce(function (acc, row) { return acc + (row.total || 0); }, 0);
     var failed = items.filter(function (it) { return it.state === 'failed'; }).length;
-    var dups = items.filter(function (it) { return it.state === 'duplicate'; }).length;
+    var dups = dupItems.length;
 
-    var text = rows.length
-      ? plural(rows.length, 'חשבונית אחת נשמרה', '% חשבוניות נשמרו') +
-        ' בגיליון ובדרייב, בסך הכל ' + fmtMoney(sum) + '.'
-      : 'לא נשמרה אף חשבונית חדשה.';
+    /* כותרת המסך נקבעת כאן ולא ב-HTML. "נשמר" מעל מסך שבו לא נשמר
+       כלום הוא פשוט לא נכון, וזה המצב כשכל האצווה כבר הייתה בגיליון. */
+    var nothingNew = rows.length === 0 && dups > 0;
+    els.doneTitle.textContent = nothingNew ? 'לא נשמר כלום' : 'נשמר';
 
-    /* כפילות היא לא כישלון ולא הצלחה, ולכן היא נאמרת בנפרד. בלי זה
-       איריס הייתה רואה "נשמרו 2" אחרי שהעלתה 3, בלי לדעת מה קרה לשלישית. */
-    if (dups) {
-      text += ' ' + plural(dups,
-        'חשבונית אחת לא נשמרה כי היא כבר בגיליון.',
-        '% חשבוניות לא נשמרו כי הן כבר בגיליון.');
+    var text;
+    if (nothingNew) {
+      text = 'המערכת קראה את החשבוניות ועבדה כרגיל, אבל לא נוספה שורה חדשה לגיליון. ' +
+        plural(dups, 'החשבונית כבר הייתה שם.', 'כל % החשבוניות כבר היו שם.');
+    } else {
+      text = plural(rows.length, 'חשבונית אחת נשמרה', '% חשבוניות נשמרו') +
+        ' בגיליון ובדרייב, בסך הכל ' + fmtMoney(sum) + '.';
+      /* כפילות היא לא כישלון ולא הצלחה, ולכן היא נאמרת בנפרד. בלי זה
+         איריס רואה "נשמרו 2" אחרי שהעלתה 3, בלי לדעת מה קרה לשלישית. */
+      if (dups) {
+        text += ' ' + plural(dups,
+          'חשבונית אחת לא נשמרה כי היא כבר בגיליון.',
+          '% חשבוניות לא נשמרו כי הן כבר בגיליון.');
+      }
     }
+
     if (failed) {
       text += ' ' + plural(failed,
         'חשבונית אחת לא נקראה וכדאי לצלם אותה שוב.',
