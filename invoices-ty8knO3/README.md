@@ -1,6 +1,6 @@
 # קליטת חשבוניות — החוזה בין העמוד ל־n8n
 
-העמוד ב־`invoices/` מחובר לוורקפלואו **Lehem veshemesh - Invoices**
+העמוד ב־`invoices-ty8knO3/` מחובר לוורקפלואו **Lehem veshemesh - Invoices**
 (`mhKSJrTgauPv4zfN`). הכתובות בראש `invoices.js`:
 
 ```js
