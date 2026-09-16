@@ -65,6 +65,11 @@
 
   var TERMINAL = { ready: true, failed: true };
 
+  /* בטלפון התמונה ממילא יוצאת גדולה, והצבטה מגדילה אותה טוב יותר מכל
+     לוח שנבנה. לכן ההגדלה קיימת רק במכשיר שמצביעים בו בעכבר, שם
+     התמונה קטנה ואין מחוות זום. */
+  var CAN_DOCK = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
   var NET_ERROR = 'אין כרגע תקשורת עם המערכת. אפשר לנסות שוב בעוד רגע.';
 
   /* ========================= עוזרים ========================= */
@@ -881,8 +886,11 @@
            אלא רשת ביטחון, כי ספארי בנייד לא תמיד מרנדר PDF ב-iframe. */
         var doc = h('iframe', { class: 'rev__pdf', src: src, title: alt });
 
-        var big = h('button', { class: 'rev__docbtn', type: 'button', text: 'הגדלה' });
-        big.addEventListener('click', function () { lbOpen(src, alt, big, true); });
+        var big = null;
+        if (CAN_DOCK) {
+          big = h('button', { class: 'rev__docbtn', type: 'button', text: 'הגדלה' });
+          big.addEventListener('click', function () { lbOpen(src, alt, big, true); });
+        }
 
         shot = h('figure', { class: 'rev__shot' }, [
           doc,
@@ -894,7 +902,7 @@
             })
           ])
         ]);
-      } else {
+      } else if (CAN_DOCK) {
         var zoom = h('button', {
           class: 'rev__zoom', type: 'button', 'aria-label': 'הגדלת ' + alt
         }, [h('img', { src: src, alt: alt, loading: 'lazy' })]);
@@ -904,6 +912,11 @@
         shot = h('figure', { class: 'rev__shot' }, [
           zoom,
           h('figcaption', { text: 'לחיצה על התמונה מגדילה אותה' })
+        ]);
+      } else {
+        /* בלי כפתור ובלי כיתוב. התמונה היא תמונה, ומצביטים עליה. */
+        shot = h('figure', { class: 'rev__shot' }, [
+          h('img', { src: src, alt: alt, loading: 'lazy' })
         ]);
       }
     }

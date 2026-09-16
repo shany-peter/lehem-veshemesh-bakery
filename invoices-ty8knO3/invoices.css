@@ -140,6 +140,18 @@
 /* בנייד הכפתורים על כל הרוחב, כי מצלמים בעמידה ובאצבע אחת */
 .drop__actions .btn { width: 100%; }
 
+/* ---------- מה מוצג לפי סוג המכשיר ----------
+   במחשב "צילום חשבונית" פותח דיאלוג קבצים רגיל, כלומר כפתור שני
+   שעושה בדיוק את מה שהראשון עושה. hover ו-pointer יחד הם הסימן
+   הטוב ביותר ל"מצביעים כאן בעכבר", ולא רוחב המסך. */
+.only-desk { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  #btn-camera { display: none; }
+  .only-touch { display: none; }
+  .only-desk { display: inline; }
+}
+
 .drop__hint {
   margin: 1.25rem 0 0;
   font-size: 0.875rem;
