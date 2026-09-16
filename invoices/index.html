@@ -8,8 +8,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="invoices.css">
+<!-- ?v= בסוף כל נכס: בלי זה הדפדפן מגיש invoices.js מהמטמון גם אחרי
+     פריסה חדשה, וזה כבר עלה לנו בסבב בדיקה שלם שנראה כמו באג בשרת.
+     מעלים את המספר בכל שינוי בקבצים האלה. -->
+<link rel="stylesheet" href="../style.css?v=2">
+<link rel="stylesheet" href="invoices.css?v=2">
 </head>
 <body>
 
@@ -142,7 +145,7 @@
   </div>
 </footer>
 
-<script src="invoices.js" defer></script>
+<script src="invoices.js?v=2" defer></script>
 
 </body>
 </html>
