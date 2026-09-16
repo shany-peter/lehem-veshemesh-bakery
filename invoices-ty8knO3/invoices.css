@@ -445,6 +445,41 @@
   text-align: center;
 }
 
+/* ---------- חשבונית PDF ----------
+   מוצגת ישירות ולא בתוך כפתור, כי iframe בולע את הלחיצה. הפעולות
+   יושבות מתחתיה, והקישור לכרטיסייה חדשה הוא רשת הביטחון לספארי
+   בנייד, שלא תמיד מרנדר PDF בתוך iframe. */
+.rev__pdf {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 26rem;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #FFFFFF;
+}
+
+.rev__docbar {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.rev__docbtn {
+  font-family: var(--body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--brick-deep);
+  background: transparent;
+  border: 1px solid var(--clay);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.rev__docbtn:hover { background: var(--paper-warm); }
+
 /* ---------- הגדלת חשבונית ----------
    לוח מעוגן, לא שכבה שמכסה. מספר חשבונית הוא תשע ספרות ויותר, ובמודאל
    מלא צריך לזכור אותו בעל פה, לסגור את ההגדלה, ורק אז להקליד. כאן
@@ -521,6 +556,18 @@ body.is-docked {
   cursor: zoom-out;
 }
 
+/* PDF בלוח: הצופה המובנה של הדפדפן ממלא את כל השטח ומנהל זום בעצמו.
+   place-items במצב center היה מכווץ את ה-iframe לגודל התוכן, ולכן
+   stretch דווקא כאן. */
+.lightbox__stage--doc { place-items: stretch; }
+
+.lightbox__stage iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #FFFFFF;
+}
+
 /* אין כאן נעילת גלילה. הרקע חייב להישאר נגלל, אחרת אי אפשר להגיע
    לשדה שנמצא מתחת לקצה המסך בזמן שהתמונה פתוחה. */
 
@@ -549,6 +596,18 @@ body.is-docked {
 }
 
 .rev__field input:focus { border-color: var(--clay); }
+
+/* שדה תאריך ומספרים חייבים כיוון ltr גם בדף rtl.
+   הפקד המובנה של התאריך בנוי משלושה חלקים, והדפדפן מסדר אותם לפי
+   כיוון האלמנט. ב-rtl הם התהפכו והוצג "Sep 2026 11" במקום 11 Sep 2026.
+   אותו דבר נכון למספרים: סכום הוא תמיד ltr, גם כשהתווית לידו בעברית.
+   text-align נשאר ימין כדי שהשדות יישארו מיושרים עם שאר הטופס. */
+.rev__field input[type="date"],
+.rev__field input[inputmode="decimal"],
+.rev__field input[inputmode="numeric"] {
+  direction: ltr;
+  text-align: right;
+}
 
 /* שדה ששונה ביד מסומן, כדי שברור מה נקרא ומה תוקן */
 .rev__field input.is-edited {

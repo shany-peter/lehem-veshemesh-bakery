@@ -160,6 +160,7 @@
 
   var lb = $('lightbox');
   var lbImg = $('lb-img');
+  var lbDoc = $('lb-doc');
   var lbStage = $('lb-stage');
   var lbZoom = $('lb-zoom');
   var lbClose = $('lb-close');
@@ -172,11 +173,28 @@
     lbZoom.textContent = full ? 'התאמה למסך' : 'גודל מלא';
   }
 
-  function lbOpen(src, alt, opener) {
+  function lbOpen(src, alt, opener, isPdf) {
     lbOpener = opener || null;
-    lbImg.src = src;
-    lbImg.alt = alt || '';
-    lbSetZoom(false);
+
+    if (isPdf) {
+      lbImg.hidden = true;
+      lbImg.removeAttribute('src');
+      lbDoc.src = src;
+      lbDoc.hidden = false;
+      lbStage.classList.add('lightbox__stage--doc');
+      /* ל-PDF אין "גודל מלא": הצופה המובנה של הדפדפן מנהל את הזום בעצמו */
+      lbZoom.hidden = true;
+    } else {
+      lbStage.classList.remove('lightbox__stage--doc');
+      lbDoc.hidden = true;
+      lbDoc.removeAttribute('src');
+      lbImg.hidden = false;
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lbZoom.hidden = false;
+      lbSetZoom(false);
+    }
+
     lb.hidden = false;
     document.body.classList.add('is-docked');
     /* בכוונה בלי focus כאן. הלוח נפתח כדי שאפשר יהיה להקליד מולו,
@@ -190,6 +208,7 @@
     var insideLb = lb.contains(document.activeElement);
     lb.hidden = true;
     lbImg.removeAttribute('src');
+    lbDoc.removeAttribute('src');
     document.body.classList.remove('is-docked');
     if (lbOpener) {
       if (insideLb) lbOpener.focus();
@@ -245,7 +264,9 @@
         name: file.name,
         size: file.size,
         isPdf: isPdf,
-        previewUrl: isPdf ? null : URL.createObjectURL(file),
+        /* גם ל-PDF. בלי זה לא היה מקור להציג, והכרטיס הופיע בלי המסמך
+           בכלל, כלומר בלי הדבר היחיד שאפשר לאשר מולו. */
+        previewUrl: URL.createObjectURL(file),
         state: 'waiting',
         data: null,
         flags: [],
@@ -273,11 +294,13 @@
     renderPicked();
   }
 
+  /* ברשימת הנבחרים מציגים תג ולא תצוגה מקדימה של ה-PDF. תמונה ממוזערת
+     של PDF דורשת רינדור, וברשימה הזאת מספיק לדעת מה נבחר. */
   function thumbFor(item) {
-    if (item.previewUrl) {
-      return h('img', { class: 'thumb', src: item.previewUrl, alt: '' });
+    if (item.isPdf) {
+      return h('span', { class: 'thumb thumb--pdf', text: 'PDF', 'aria-hidden': 'true' });
     }
-    return h('span', { class: 'thumb thumb--pdf', text: 'PDF', 'aria-hidden': 'true' });
+    return h('img', { class: 'thumb', src: item.previewUrl, alt: '' });
   }
 
   function renderPicked() {
@@ -849,17 +872,40 @@
     var shot = null;
     var src = item.previewUrl || item.fileUrl;
     if (src) {
-      var alt = 'החשבונית שצולמה, ' + (d.supplier || item.name);
-      var zoom = h('button', {
-        class: 'rev__zoom', type: 'button', 'aria-label': 'הגדלת ' + alt
-      }, [h('img', { src: src, alt: alt, loading: 'lazy' })]);
+      var alt = 'החשבונית, ' + (d.supplier || item.name);
 
-      zoom.addEventListener('click', function () { lbOpen(src, alt, zoom); });
+      if (item.isPdf) {
+        /* PDF לא יכול לשבת בתוך button: הוא בולע את הלחיצה, וכפתור
+           לא אמור להכיל תוכן אינטראקטיבי. לכן המסמך מוצג ישירות,
+           והפעולות יושבות לצידו. הקישור לכרטיסייה חדשה הוא לא נוחות
+           אלא רשת ביטחון, כי ספארי בנייד לא תמיד מרנדר PDF ב-iframe. */
+        var doc = h('iframe', { class: 'rev__pdf', src: src, title: alt });
 
-      shot = h('figure', { class: 'rev__shot' }, [
-        zoom,
-        h('figcaption', { text: 'לחיצה על התמונה מגדילה אותה' })
-      ]);
+        var big = h('button', { class: 'rev__docbtn', type: 'button', text: 'הגדלה' });
+        big.addEventListener('click', function () { lbOpen(src, alt, big, true); });
+
+        shot = h('figure', { class: 'rev__shot' }, [
+          doc,
+          h('div', { class: 'rev__docbar' }, [
+            big,
+            h('a', {
+              class: 'rev__docbtn', href: src, target: '_blank', rel: 'noopener',
+              text: 'פתיחה בכרטיסייה חדשה'
+            })
+          ])
+        ]);
+      } else {
+        var zoom = h('button', {
+          class: 'rev__zoom', type: 'button', 'aria-label': 'הגדלת ' + alt
+        }, [h('img', { src: src, alt: alt, loading: 'lazy' })]);
+
+        zoom.addEventListener('click', function () { lbOpen(src, alt, zoom, false); });
+
+        shot = h('figure', { class: 'rev__shot' }, [
+          zoom,
+          h('figcaption', { text: 'לחיצה על התמונה מגדילה אותה' })
+        ]);
+      }
     }
 
     open.appendChild(h('div', { class: 'rev__grid' }, [shot, fields]));

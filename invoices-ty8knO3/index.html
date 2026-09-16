@@ -11,8 +11,8 @@
 <!-- ?v= בסוף כל נכס: בלי זה הדפדפן מגיש invoices.js מהמטמון גם אחרי
      פריסה חדשה, וזה כבר עלה לנו בסבב בדיקה שלם שנראה כמו באג בשרת.
      מעלים את המספר בכל שינוי בקבצים האלה. -->
-<link rel="stylesheet" href="../style.css?v=2">
-<link rel="stylesheet" href="invoices.css?v=2">
+<link rel="stylesheet" href="../style.css?v=3">
+<link rel="stylesheet" href="invoices.css?v=3">
 </head>
 <body>
 
@@ -136,6 +136,7 @@
   </div>
   <div class="lightbox__stage" id="lb-stage">
     <img id="lb-img" alt="">
+    <iframe id="lb-doc" title="החשבונית" hidden></iframe>
   </div>
 </div>
 
@@ -145,7 +146,7 @@
   </div>
 </footer>
 
-<script src="invoices.js?v=2" defer></script>
+<script src="invoices.js?v=3" defer></script>
 
 </body>
 </html>
