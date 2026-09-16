@@ -79,6 +79,18 @@
 
   var NET_ERROR = 'אין כרגע תקשורת עם המערכת. אפשר לנסות שוב בעוד רגע.';
 
+  /* מספר הגרסה נקרא מתגית הסקריפט של הקובץ הזה עצמו, ולכן הוא לא יכול
+     לשקר: אם הדפדפן מגיש קוד ישן מהמטמון, יוצג המספר הישן. זו הדרך
+     היחידה לענות בטלפון על "האם אני רואה את התיקון או את הקוד הישן",
+     בלי כלי פיתוח. מתעדכן לבד עם ?v= ב-index.html. */
+  function showVersion() {
+    var tag = document.querySelector('script[src*="invoices.js"]');
+    var src = tag ? tag.getAttribute('src') : '';
+    var m = src.match(/[?&]v=([^&]+)/);
+    var slot = $('build');
+    if (slot) slot.textContent = 'גרסה ' + (m ? m[1] : 'לא ידועה');
+  }
+
   /* ========================= עוזרים ========================= */
 
   function $(id) { return document.getElementById(id); }
@@ -625,16 +637,22 @@
     pollTimer = setTimeout(runPoll, gap);
   }
 
+  /* מונה דורות. כל יציאה לרקע מקדמת אותו, וכל תשובה שחוזרת מדור קודם
+     נפסלת. בלי זה נשארה דליפה: הבקשה שהייתה באוויר ברגע המעבר לרקע
+     נקטעת, אבל הדחייה שלה מגיעה לפעמים רק אחרי שחזרנו, כשהעמוד כבר
+     גלוי. בדיקת document.hidden לבדה מפספסת בדיוק את המקרה הזה,
+     וזה המקרה שקרה בפועל בטלפון. */
+  var pollGen = 0;
+
   function runPoll() {
+    var gen = pollGen;
+
     pollOnce().then(function (finished) {
+      if (gen !== pollGen) return;
       if (finished) { finishWork(); return; }
       scheduleNextPoll();
     }).catch(function () {
-      /* הטלפון השהה את הטאב. זו לא תקלת תקשורת, וזו לא שגיאה שצריך
-         לספור: המערכת ממשיכה לעבוד, רק הדפדפן הפסיק לשאול. הספירה
-         כאן הייתה מגיעה ל-4 תוך פחות מדקה ברקע, והפולינג היה נעצר
-         לגמרי דווקא כשאיריס רק ענתה לטלפון. */
-      if (document.hidden) return;
+      if (gen !== pollGen || document.hidden) return;
 
       pollErrors++;
       if (pollErrors >= POLL_MAX_ERRORS) {
@@ -658,6 +676,8 @@
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) {
       hiddenSince = Date.now();
+      /* פוסל את הבקשה שבאוויר לפני שהטלפון קוטע אותה */
+      pollGen++;
       if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
       return;
     }
@@ -1336,6 +1356,7 @@
   });
 
   /* ========================= התחלה ========================= */
+  showVersion();
   renderPicked();
   show('pick');
 })();
