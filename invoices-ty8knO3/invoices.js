@@ -630,6 +630,12 @@
       if (finished) { finishWork(); return; }
       scheduleNextPoll();
     }).catch(function () {
+      /* הטלפון השהה את הטאב. זו לא תקלת תקשורת, וזו לא שגיאה שצריך
+         לספור: המערכת ממשיכה לעבוד, רק הדפדפן הפסיק לשאול. הספירה
+         כאן הייתה מגיעה ל-4 תוך פחות מדקה ברקע, והפולינג היה נעצר
+         לגמרי דווקא כשאיריס רק ענתה לטלפון. */
+      if (document.hidden) return;
+
       pollErrors++;
       if (pollErrors >= POLL_MAX_ERRORS) {
         say(els.workStatus, NET_ERROR, 'error');
@@ -641,6 +647,33 @@
       scheduleNextPoll();
     });
   }
+
+  /* ---------- יציאה וחזרה מהטאב ----------
+     ברגע שהטאב עובר לרקע הדפדפן חונק טיימרים ומבטל בקשות. הפולינג
+     המשיך לרוץ לתוך הקיר הזה, ספר כישלונות, והציג "התקשורת נקטעה"
+     על משהו שלא נקטע. במקום זה עוצרים בכניסה לרקע וממשיכים ביציאה
+     ממנו, מיד ובלי להמתין למחזור הבא. */
+  var hiddenSince = 0;
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      hiddenSince = Date.now();
+      if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
+      return;
+    }
+
+    if (phase !== 'read' || !busy) return;
+
+    /* הזמן ברקע לא נספר לטובת מגבלת 12 הדקות. הפירסור אצל LlamaParse
+       רץ בינתיים ממילא, ואין סיבה שהמתנה בטלפון תקצר את הסבלנות. */
+    if (hiddenSince) {
+      pollStarted += Date.now() - hiddenSince;
+      hiddenSince = 0;
+    }
+    pollErrors = 0;
+    say(els.workStatus, '');
+    runPoll();
+  });
 
   function startPolling() {
     pollStarted = Date.now();
@@ -1016,8 +1049,8 @@
     }
     if (eyes) {
       parts.push(plural(eyes,
-        'אחת מסומנת ודורשת עין, והיא פתוחה למעלה.',
-        '% מהן מסומנות ודורשות עין, והן פתוחות למעלה.'));
+        'אחת דורשת בדיקה ידנית, והיא פתוחה ראשונה ברשימה.',
+        '% מהן דורשות בדיקה ידנית, והן פתוחות ראשונות ברשימה.'));
     }
     if (!saved) parts.push('שום סכום לא נכנס לגיליון לפני שלוחצים על האישור.');
     if (failed) {

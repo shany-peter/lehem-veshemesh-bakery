@@ -601,7 +601,10 @@ body.is-docked {
 
 .rev__pair { display: grid; gap: 1rem; }
 
-.rev__field { display: grid; gap: 0.35rem; }
+/* min-width אפס, כי פריט ב-grid הוא min-width: auto כברירת מחדל והוא
+   מסרב להתכווץ מתחת לרוחב התוכן שלו. הפקד המובנה של התאריך ב-iOS הוא
+   רכיב עם רוחב מובנה משלו, ולכן הוא גלש מחוץ לכרטיס במקום להצטמצם. */
+.rev__field { display: grid; gap: 0.35rem; min-width: 0; }
 
 .rev__field label {
   font-size: 0.875rem;
@@ -619,6 +622,15 @@ body.is-docked {
   border-radius: var(--radius);
   padding: 0.75rem 0.85rem;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ספארי בנייד מתעלם מ-width על פקד תאריך כל עוד הוא במראה המובנה שלו.
+   ביטול המראה מחזיר אותו להתנהג כמו שדה רגיל, ואז 100% נשמר. */
+.rev__field input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .rev__field input:focus { border-color: var(--clay); }
