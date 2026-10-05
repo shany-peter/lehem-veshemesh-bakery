@@ -37,6 +37,12 @@
      המחשב, שלא תמיד מסונכרן עם השרת. */
   var CLOCK_SLACK_MS = 2 * 60 * 1000;
 
+  /* ניתוק לא עוצר את הוורקפלואו. n8n ממשיך לקרוא ולכתוב גם אחרי שהדפדפן
+     הלך, ולכן בדיקה אחת ברגע הניתוק עלולה למצוא את הגרסה הישנה של מסמך
+     שיגיע עוד עשרים שניות. בודקים שוב כל חמש שניות, עד שתי דקות. */
+  var WATCH_EVERY_MS = 5000;
+  var WATCH_FOR_MS = 2 * 60 * 1000;
+
   var MAX_FILE_BYTES = 10 * 1024 * 1024;
 
   /* LlamaParse עם PDF של כמה עמודים חוזר בדרך כלל תוך 10 עד 40 שניות.
@@ -174,9 +180,11 @@
   /* מחזיר מפה מסוג מסמך לשורה שלו, או null אם לא הצלחנו לבדוק.
      null אינו "אין מסמכים", ולכן במקרה הזה הטבלה מתרוקנת ולא מציגה
      שלוש שורות של "אין מסמך" שהיו מבהילות לשווא. */
-  function loadKnown(freshType) {
+  function loadKnown(freshType, quiet) {
     var list = $('known-list');
-    knownNote('בודקים...');
+    /* בבדיקה החוזרת אחרי ניתוק אין "בודקים..." כל חמש שניות: מסך העבודה
+       כבר אומר שבודקים, וההודעה הייתה מהבהבת מעל הטבלה */
+    if (!quiet) knownNote('בודקים...');
 
     var ctrl = window.AbortController ? new AbortController() : null;
     var cut = ctrl ? setTimeout(function () { ctrl.abort(); }, 15000) : null;
@@ -388,7 +396,7 @@
     return {
       kind: 'warn', next: 'retry',
       title: 'לא קיבלנו תשובה',
-      main: 'ייתכן שהעדכון הצליח וייתכן שלא, ואין לנו דרך לדעת מכאן. אפשר להעלות את אותו קובץ שוב בלי חשש, והתוצאה תהיה זהה.',
+      main: 'החיבור נותק, ובשתי הדקות שאחר כך המסמך החדש לא הופיע ברשימה. ייתכן שהעדכון עוד רץ וייתכן שנכשל. אפשר להעלות את אותו קובץ שוב בלי חשש, והתוצאה תהיה זהה.',
       small: state.wentHidden
         ? 'העמוד היה ברקע בזמן העדכון, וזה יכול לנתק את החיבור. בפעם הבאה כדאי להשאיר אותו פתוח עד הסוף.'
         : 'ייתכן שהחיבור לאינטרנט נותק באמצע.'
@@ -417,18 +425,36 @@
       return;
     }
 
-    /* עד שהבדיקה חוזרת, הכפתורים נשארים נעולים והעמוד נשאר במסך העבודה */
-    $('work-elapsed').textContent = 'בודקים אם העדכון נקלט';
-    loadKnown(null).then(function (map) {
-      state.busy = false;
-      refresh();
-      if (landed(map)) {
-        loadKnown(state.type);
-        render(success('החיבור נותק לפני שהגיעה תשובה, אבל בדקנו: הקובץ נקלט.'));
-      } else {
-        render(unknown());
-      }
-    });
+    /* עד שהבדיקה מסתיימת, הכפתורים נשארים נעולים והעמוד נשאר במסך העבודה */
+    var started = Date.now();
+    var slot = $('work-elapsed');
+    function tell() {
+      var s = Math.round((Date.now() - started) / 1000);
+      slot.textContent = 'החיבור נותק לפני שהגיעה תשובה. בודקים אם המסמך נקלט' +
+        (s >= 5 ? ' (' + s + ' שניות)' : '');
+    }
+    tell();
+    state.timer = setInterval(tell, 1000);
+
+    function check() {
+      loadKnown(null, true).then(function (map) {
+        if (landed(map)) {
+          stopClock();
+          state.busy = false;
+          refresh();
+          loadKnown(state.type, true);
+          render(success('החיבור נותק לפני שהגיעה תשובה, אבל בדקנו: הקובץ נקלט.'));
+        } else if (Date.now() - started >= WATCH_FOR_MS) {
+          stopClock();
+          state.busy = false;
+          refresh();
+          render(unknown());
+        } else {
+          setTimeout(check, WATCH_EVERY_MS);
+        }
+      });
+    }
+    check();
   }
 
   function render(r) {
