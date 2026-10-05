@@ -44,13 +44,13 @@
 קודם לפני שהמאפייה נכנסה אליה. **אין בה ואסור שיהיה בה שום דבר שאינו של
 המאפייה**, כי החיפוש עובר על כל הטבלה, וקטע מעולם אחר יגיע לתשובה.
 
-כל קטע נושא ב־`metadata.doc` את סוג המסמך: `delivery-areas`, `price-list`
+כל קטע נושא ב־`metadata.doc_type` את סוג המסמך: `delivery-areas`, `price-list`
 או `policies`. זה המזהה, ולא התווית בעברית, כדי ששינוי נוסח בתפריט לא ינתק
 את המחיקה מהשורות שהיא אמורה למחוק.
 
 ### ההחלפה
 
-מוחקים כל שורה שבה `metadata->>doc` שווה לסוג המסמך, ואז כותבים את
+מוחקים כל שורה שבה `metadata->>doc_type` שווה לסוג המסמך, ואז כותבים את
 החדש. מחירון חדש מוחק רק את המחירון, ולא נוגע ברחובות או במדיניות.
 
 **הסדר בוורקפלואו מחייב: קריאה, בדיקה, ורק אז מחיקה.** קובץ שלא נקרא, או
@@ -105,7 +105,7 @@ Respond to Webhook בסוף, ולא מיד.
 Default Data Loader קורא PDF בעברית ושובר מילים באמצע בטאב (`דצמ	בר`), בלי
 שום שגיאה, ומילה שבורה לא נמצאת בחיפוש. Markdown וטקסט נקראים ישירות.
 
-ב־`metadata` של כל קטע: `doc`, `filename` ו־`loaded_at`.
+ב־`metadata` של כל קטע: `doc_type`, `filename` ו־`loaded_at`.
 
 ### "מה הבוט יודע עכשיו"
 
@@ -120,25 +120,25 @@ Default Data Loader קורא PDF בעברית ושובר מילים באמצע �
 POST https://peshvvhgdonacjptdmuq.supabase.co/rest/v1/rpc/kb_status
 apikey: sb_publishable_...        (המפתח הציבורי, ב־documents.js)
 body:   {}
--> [{"doc": "price-list", "filename": "...", "loaded_at": "2026-11-01T06:12:00Z", "chunks": 4}]
+-> [{"doc_type": "price-list", "filename": "...", "loaded_at": "2026-11-01T06:12:00Z", "chunks": 4}]
 ```
 
 הפונקציה, כפי שרצה בפרויקט:
 
 ```sql
 create or replace function public.kb_status()
-returns table (doc text, filename text, loaded_at text, chunks bigint)
+returns table (doc_type text, filename text, loaded_at text, chunks bigint)
 language sql stable
 security definer
 set search_path = ''
 as $$
-  select metadata->>'doc',
+  select metadata->>'doc_type',
          max(metadata->>'filename'),
          max(metadata->>'loaded_at'),
          count(*)
   from public.documents
-  where metadata ? 'doc'
-  group by metadata->>'doc';
+  where metadata ? 'doc_type'
+  group by metadata->>'doc_type';
 $$;
 
 revoke execute on function public.kb_status() from public;

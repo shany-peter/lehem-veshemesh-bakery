@@ -197,7 +197,7 @@
            תקינה: המאגר ריק. כל דבר אחר הוא "לא הצלחנו לבדוק". */
         if (!Array.isArray(rows)) throw new Error('shape');
         var map = {};
-        rows.forEach(function (d) { if (d && TYPES[d.doc]) map[d.doc] = d; });
+        rows.forEach(function (d) { if (d && TYPES[d.doc_type]) map[d.doc_type] = d; });
 
         list.textContent = '';
         Object.keys(TYPES).forEach(function (type) {
