@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מסמכי הבוט | מאפיית לחם ושמש</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<!-- ?v= בסוף כל נכס, כמו בעמוד החשבוניות. מעלים את המספר בכל שינוי. -->
+<link rel="stylesheet" href="../style.css?v=12">
+<link rel="stylesheet" href="admin.css?v=12">
+<link rel="stylesheet" href="documents.css?v=12">
+</head>
+<body>
+
+<a class="skip" href="#pick">דילוג לעדכון מסמך</a>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="topbar__brand" href="../index.html">
+      <img class="topbar__mark"
+           src="https://res.cloudinary.com/j4gfglsu/image/upload/e_trim/c_crop,g_north,w_1.0,h_0.66/e_make_transparent:12/f_png,q_auto,w_160/lehem-veshemesh-bakery/logo-lehem-veshemesh.jpg"
+           alt="" width="160" height="107">
+      <span>לחם ושמש</span>
+    </a>
+  </div>
+</header>
+
+<!-- התפריט נבנה ב-nav.js, ממקום אחד לכל העמודים הפנימיים -->
+<nav class="adminnav" id="adminnav" aria-label="עמודים פנימיים">
+  <div class="wrap"><ul class="adminnav__list"></ul></div>
+</nav>
+
+<main class="intake">
+  <div class="wrap">
+
+    <div class="intake__head">
+      <p class="eyebrow">פנימי</p>
+      <h1>מסמכי הבוט</h1>
+      <p class="intake__lede">
+        הבוט באתר עונה ללקוחות רק מתוך המסמכים שעולים כאן.
+        מסמך חדש מחליף את הקודם מאותו סוג, והקודם נמחק לגמרי.
+      </p>
+    </div>
+
+    <!-- ================= מה הבוט יודע עכשיו =================
+         תמיד שלוש שורות, אחת לכל סוג. סוג בלי מסמך מוצג במפורש, כי
+         זה אומר שהבוט מפנה לטלפון בכל שאלה בנושא שלו. -->
+    <section class="known" id="known" aria-labelledby="known-title">
+      <div class="known__head">
+        <h2 class="step__title" id="known-title">מה הבוט יודע עכשיו</h2>
+        <button class="btn btn--quiet" type="button" id="btn-known">רענון</button>
+      </div>
+      <ul class="known__list" id="known-list"></ul>
+      <p class="known__note" id="known-note" role="status" hidden></p>
+    </section>
+
+    <!-- ================= בחירה ================= -->
+    <section class="step" id="pick" aria-labelledby="pick-title">
+      <h2 class="step__title" id="pick-title">עדכון מסמך</h2>
+
+      <div class="field">
+        <label class="field__label" for="doc-type">איזה מסמך מעלים?</label>
+        <select class="field__select" id="doc-type" required>
+          <option value="" selected disabled>בחרו סוג מסמך</option>
+          <option value="price-list">מחירון</option>
+          <option value="delivery-areas">אזורי משלוח</option>
+          <option value="policies">מדיניות הזמנות ומשלוחים</option>
+        </select>
+        <!-- מה יימחק, במילים, לפני שלוחצים. זה כל האישור שצריך: הכפתור
+             עצמו אומר מה הוא מחליף, ואין חלון "האם אתם בטוחים" נוסף. -->
+        <p class="field__note" id="type-note" hidden></p>
+      </div>
+
+      <div class="drop" id="drop">
+        <p class="drop__text">
+          <span class="only-touch">בוחרים את הקובץ מהמכשיר</span>
+          <span class="only-desk">אפשר לגרור לכאן את הקובץ, או לבחור אותו מהמחשב</span>
+        </p>
+        <div class="drop__actions">
+          <button class="btn btn--outline" type="button" id="btn-browse">בחירת קובץ</button>
+        </div>
+        <p class="drop__hint">PDF, Word, Markdown או טקסט, עד 10 מגה</p>
+      </div>
+
+      <input class="visually-hidden" type="file" id="file"
+             accept=".pdf,.docx,.doc,.md,.markdown,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/markdown,text/plain">
+
+      <div class="chosen" id="chosen" hidden>
+        <span class="chosen__tag" id="chosen-tag"></span>
+        <span class="chosen__name" id="chosen-name"></span>
+        <span class="chosen__size" id="chosen-size"></span>
+        <button class="btn btn--quiet" type="button" id="btn-clear">הסרה</button>
+      </div>
+
+      <p class="form__status" id="pick-status" role="status" aria-live="polite" hidden></p>
+
+      <p class="timing">
+        המסמך נכנס לתוקף ברגע שהוא עולה. מחירון חדש מעלים ביום שבו המחירים
+        משתנים, לא לפני.
+      </p>
+
+      <div class="step__foot">
+        <button class="btn btn--solid" type="button" id="btn-upload" disabled>העלאה</button>
+      </div>
+    </section>
+
+    <!-- ================= עבודה ================= -->
+    <section class="step" id="work" aria-labelledby="work-title" hidden>
+      <h2 class="step__title" id="work-title">מעדכנים את הבוט</h2>
+      <ol class="stages" id="stages">
+        <li class="stages__item" data-stage="send">שולחים את הקובץ</li>
+        <li class="stages__item" data-stage="read">קוראים את המסמך ומעדכנים את הבוט</li>
+      </ol>
+      <p class="step__lede" id="work-elapsed"></p>
+      <p class="step__lede">זה לוקח בדרך כלל פחות מדקה. כדאי להשאיר את העמוד פתוח עד שזה נגמר.</p>
+    </section>
+
+    <!-- ================= תוצאה ================= -->
+    <section class="step" id="result" aria-labelledby="result-title" hidden>
+      <div class="result" id="result-box" role="status">
+        <h2 class="result__title" id="result-title" tabindex="-1"></h2>
+        <p class="result__main" id="result-main"></p>
+        <p class="result__small" id="result-small"></p>
+      </div>
+      <div class="step__foot">
+        <button class="btn btn--solid" type="button" id="btn-again"></button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot foot--slim">
+  <div class="wrap">
+    <p class="foot__tag">מאפיית לחם ושמש, עמוד פנימי · <span id="build"></span></p>
+  </div>
+</footer>
+
+<script src="nav.js?v=12" defer></script>
+<script src="documents.js?v=12" defer></script>
+
+</body>
+</html>

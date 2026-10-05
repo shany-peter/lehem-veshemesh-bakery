@@ -1,0 +1,202 @@
+/* ==========================================================================
+   מסמכי הבוט
+   נטען אחרי admin.css. כאן רק מה שקיים בעמוד הזה.
+   ========================================================================== */
+
+/* ---------- מה הבוט יודע עכשיו ---------- */
+.known { margin-bottom: 3rem; }
+
+.known__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.known__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* בטלפון שלוש שורות טקסט לכל מסמך: סוג, קובץ, מתי. מטאבלט ומעלה
+   שלוש עמודות. */
+.known__row {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border-right: 4px solid var(--olive);
+}
+
+.known__row + .known__row { border-top: 1px solid var(--line); }
+
+.known__row--missing { border-right-color: var(--brick); }
+.known__row--fresh { background: var(--olive-pale); }
+
+.known__type { font-weight: 600; }
+
+.known__file {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.known__row--missing .known__file { color: var(--brick-deep); font-weight: 600; }
+
+.known__when { font-size: 0.875rem; color: var(--ink-soft); }
+
+.known__note {
+  margin: 0.75rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 40rem) {
+  .known__row {
+    grid-template-columns: 9rem 1fr auto;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .known__when { text-align: left; }
+}
+
+/* ---------- סוג המסמך ---------- */
+.field { margin-bottom: 1.5rem; }
+
+.field__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.field__select {
+  width: 100%;
+  max-width: 26rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.9rem;
+}
+
+.field__select:focus { border-color: var(--clay); }
+
+/* מה יימחק. בצבע הקרום ולא באדום: זו לא שגיאה, זה מה שהכפתור יעשה */
+.field__note {
+  margin: 0.75rem 0 0;
+  max-width: 52ch;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  background: var(--crust-pale);
+  border-right: 3px solid var(--crust);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.9rem;
+}
+
+/* ---------- הקובץ שנבחר ---------- */
+.chosen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+
+.chosen__tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  background: var(--paper-warm);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.15rem 0.5rem;
+}
+
+/* שם קובץ ארוך בלי רווחים לא יכול לדחוף את העמוד הצידה */
+.chosen__name {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+
+.chosen__size { color: var(--ink-soft); font-size: 0.875rem; }
+
+#pick-status { margin-top: 1rem; }
+
+.timing {
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+/* ---------- שלבי העבודה ---------- */
+.stages {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.stages__item {
+  position: relative;
+  padding-right: 1.75rem;
+  color: var(--ink-soft);
+}
+
+/* עיגול ריק שממתין, עיגול מלא שפעיל, וי כשנגמר. בלי אנימציה, כמו כל האתר */
+.stages__item::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0.45em;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  box-sizing: border-box;
+}
+
+.stages__item--now { color: var(--ink); font-weight: 600; }
+.stages__item--now::before { border-color: var(--clay); background: var(--clay); }
+
+.stages__item--done { color: var(--ink); }
+.stages__item--done::before { border-color: var(--olive); background: var(--olive); }
+
+/* ---------- תוצאה ----------
+   משפט אחד גדול שאומר מה קרה, ומתחתיו קטן מה לעשות. הפס בצד מבחין
+   בין שלושת המצבים במבט אחד: זית עודכן, קרום לא עודכן ולא נגרע כלום,
+   לבנה כשהמסמך הקודם כבר נמחק ויש מה לעשות עכשיו. */
+.result {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-right: 4px solid var(--olive);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.25rem;
+}
+
+.result--warn { border-right-color: var(--crust); }
+.result--stop { border-right-color: var(--brick); }
+
+.result__title {
+  font-size: clamp(1.375rem, 5vw, 1.75rem);
+  margin-bottom: 0.75rem;
+}
+
+.result__main { font-size: 1.0625rem; max-width: 52ch; }
+
+.result__small {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}

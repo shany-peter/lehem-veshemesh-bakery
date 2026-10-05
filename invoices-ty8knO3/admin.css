@@ -1,0 +1,200 @@
+/* ==========================================================================
+   העמודים הפנימיים של המאפייה
+   משותף לכל העמודים שבתיקייה הזאת: קליטת חשבוניות, מסמכי הבוט, ומה שיבוא.
+   ממשיך את style.css של האתר, ונטען אחריו ולפני הקובץ של העמוד עצמו.
+   ========================================================================== */
+
+:root {
+  /* שני גוונים שלא היו נחוצים באתר השיווקי, ושומרים על אותה משפחה חמה.
+     ירוק זית במקום ירוק רענן, כדי שלא ייראה כמו התראה של מערכת אחרת. */
+  --olive:      #5E7245;  /* נבדק ותקין */
+  --olive-pale: #E8EBDF;
+  --crust-pale: #F7E7CD;  /* רקע לדגל שדורש עין */
+}
+
+/* ---------- עוזרים ---------- */
+
+/* כל כלל display של הדף גובר על [hidden] של הדפדפן, גם כשהוא פחות
+   ספציפי. ל-.btn יש display: inline-block ב-style.css, ולכן כפתור
+   שנכתב <button hidden> פשוט הוצג. זה תפס אותנו פעמיים, פעם אחת
+   בהגדלה ופעם אחת בכפתור "בדיקה שוב", ולכן הכלל כאן גלובלי ולא
+   נקודתי למחלקה. כל אלמנט עם hidden באמת מוסתר, בלי יוצא מן הכלל. */
+[hidden] { display: none !important; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- מעטפת ---------- */
+.intake { padding-block: 2.5rem 4rem; }
+
+.intake__head { margin-bottom: 2.5rem; }
+
+.intake__head h1 {
+  font-family: var(--display);
+  font-size: clamp(1.875rem, 7vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: var(--brick-deep);
+}
+
+.intake__lede {
+  margin-top: 0.9rem;
+  color: var(--ink-soft);
+  max-width: 48ch;
+}
+
+/* ---------- שלב ---------- */
+.step { margin-bottom: 1rem; }
+
+.step__title {
+  font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+  margin-bottom: 1.25rem;
+}
+
+.step__lede {
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin-bottom: 1.5rem;
+}
+
+.step__foot {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* ---------- כפתורים נוספים ---------- */
+.btn--outline {
+  background: transparent;
+  color: var(--brick-deep);
+  border-color: var(--clay);
+}
+.btn--outline:hover { background: var(--paper-warm); }
+
+.btn--quiet {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: transparent;
+  padding-inline: 0.75rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.btn--quiet:hover { color: var(--brick); }
+
+.btn:disabled,
+.btn--outline:disabled {
+  background: var(--clay-pale);
+  color: var(--ink-soft);
+  border-color: transparent;
+  cursor: default;
+}
+
+/* ---------- אזור הגרירה ---------- */
+.drop {
+  background: var(--card);
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.drop--over {
+  border-color: var(--clay);
+  background: var(--paper-warm);
+}
+
+.drop__text {
+  font-family: var(--display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.drop__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* בנייד הכפתורים על כל הרוחב, כי מצלמים בעמידה ובאצבע אחת */
+.drop__actions .btn { width: 100%; }
+
+/* ---------- מה מוצג לפי סוג המכשיר ----------
+   במחשב "צילום חשבונית" פותח דיאלוג קבצים רגיל, כלומר כפתור שני
+   שעושה בדיוק את מה שהראשון עושה. hover ו-pointer יחד הם הסימן
+   הטוב ביותר ל"מצביעים כאן בעכבר", ולא רוחב המסך. */
+.only-desk { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .only-touch { display: none; }
+  .only-desk { display: inline; }
+}
+
+.drop__hint {
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- תפריט העמודים ----------
+   הרשימה עצמה נבנית ב-nav.js, ממקום אחד. גובה מינימלי כדי שהעמוד
+   לא יקפוץ כשהתפריט נכנס. בטלפון, כשיהיו יותר עמודים ממה שנכנס
+   ברוחב, הרשימה נגללת לצדדים בתוך עצמה ולא מרחיבה את העמוד. */
+.adminnav {
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  min-height: 3rem;
+}
+
+.adminnav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.75rem;
+  overflow-x: auto;
+}
+
+.adminnav__link {
+  display: block;
+  padding: 0.7rem 0 0.6rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--ink-soft);
+  border-bottom: 3px solid transparent;
+}
+
+.adminnav__link:hover { color: var(--brick); }
+
+.adminnav__link[aria-current="page"] {
+  color: var(--brick-deep);
+  border-bottom-color: var(--brick);
+}
+
+/* ---------- פוטר דק ---------- */
+.foot--slim { padding-block: 2rem; text-align: center; }
+.foot--slim .foot__tag { color: var(--clay-pale); }
+
+/* ==========================================================================
+   טאבלט ומעלה
+   ========================================================================== */
+@media (min-width: 40rem) {
+  .intake { padding-block: 3.5rem 5rem; }
+
+  .drop { padding: 3rem 2rem; }
+  .drop__actions .btn { width: auto; }
+}
