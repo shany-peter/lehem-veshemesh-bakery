@@ -767,3 +767,214 @@ a { color: var(--brick); }
   color: var(--ink-soft);
   cursor: default;
 }
+
+/* ---------- חלון השאלות לבוט ----------
+   כפתור צף בפינה, וחלון שנפתח מעליו. בנייד החלון ממלא את המסך, כי
+   מקלדת פתוחה משאירה לחלון קטן מקום לשתי שורות בלבד. בלי אנימציות,
+   כמו בשאר האתר. */
+.chat {
+  position: fixed;
+  inset-inline-end: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  font-family: var(--body);
+}
+
+.chat__open {
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--brick);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.8rem 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(51, 33, 15, 0.22);
+}
+.chat__open:hover { background: var(--brick-deep); }
+
+.chat__panel {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+/* בלי זה display: flex גובר על hidden, והחלון נפתח עם טעינת העמוד */
+.chat__panel[hidden] { display: none; }
+
+.chat__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--brick);
+  color: var(--paper);
+}
+
+.chat__title {
+  font-size: 1.15rem;
+  color: var(--paper);
+}
+
+.chat__sub {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--clay-pale);
+}
+
+.chat__close {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid rgba(251, 245, 234, 0.4);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chat__close:hover { background: var(--brick-deep); }
+
+.chat__log {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0;
+  padding: 1rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* ב־rtl סוף השורה הוא שמאל: השואל משמאל, המאפייה מימין */
+.chat__msg {
+  max-width: 85%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  font-size: 0.975rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.chat__msg--bot {
+  align-self: flex-start;
+  background: var(--paper-warm);
+  color: var(--ink);
+}
+
+.chat__msg--user {
+  align-self: flex-end;
+  background: var(--brick);
+  color: var(--paper);
+}
+
+.chat__msg--pending {
+  align-self: flex-start;
+  color: var(--ink-soft);
+  padding-inline: 0.2rem;
+}
+
+.chat__msg--note {
+  align-self: stretch;
+  max-width: none;
+  font-size: 0.9rem;
+  color: var(--brick-deep);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-right: 3px solid var(--crust);
+  border-radius: var(--radius);
+}
+
+.chat__msg a { color: inherit; font-weight: 600; direction: ltr; unicode-bidi: isolate; }
+
+.chat__suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1rem 0.75rem;
+}
+.chat__suggest[hidden] { display: none; }
+
+.chat__chip {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  color: var(--brick);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+}
+.chat__chip:hover { border-color: var(--clay); }
+.chat__chip:disabled { color: var(--ink-soft); cursor: default; }
+
+.chat__form {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--line);
+  background: var(--card);
+}
+
+/* 16px לפחות, אחרת ספארי בנייד מגדיל את כל העמוד כשהתיבה מקבלת פוקוס */
+.chat__input {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.75rem;
+}
+.chat__input:focus { border-color: var(--clay); outline: none; }
+
+.chat__send {
+  flex: none;
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--brick);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+}
+.chat__send:hover { background: var(--brick-deep); }
+.chat__send:disabled { background: var(--clay-pale); color: var(--ink-soft); cursor: default; }
+
+/* בנייד החלון מכסה את העמוד, ולכן העמוד שמתחתיו לא נגלל */
+html.chat-is-open { overflow: hidden; }
+
+@media (min-width: 40rem) {
+  html.chat-is-open { overflow: auto; }
+
+  .chat { inset-inline-end: 1.5rem; bottom: 1.5rem; }
+
+  .chat__panel {
+    inset: auto;
+    inset-inline-end: 1.5rem;
+    bottom: 5.25rem;
+    width: 23.75rem;
+    height: min(36rem, calc(100dvh - 7rem));
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(51, 33, 15, 0.2);
+  }
+}
+
+@media print {
+  .chat { display: none; }
+}
