@@ -11,8 +11,9 @@
 <!-- ?v= בסוף כל נכס: בלי זה הדפדפן מגיש invoices.js מהמטמון גם אחרי
      פריסה חדשה, וזה כבר עלה לנו בסבב בדיקה שלם שנראה כמו באג בשרת.
      מעלים את המספר בכל שינוי בקבצים האלה. -->
-<link rel="stylesheet" href="../style.css?v=10">
-<link rel="stylesheet" href="invoices.css?v=10">
+<link rel="stylesheet" href="../style.css?v=11">
+<link rel="stylesheet" href="admin.css?v=11">
+<link rel="stylesheet" href="invoices.css?v=11">
 </head>
 <body>
 
@@ -27,9 +28,13 @@
            alt="" width="160" height="107">
       <span>לחם ושמש</span>
     </a>
-    <p class="topbar__tag">קליטת חשבוניות</p>
   </div>
 </header>
+
+<!-- התפריט נבנה ב-nav.js, ממקום אחד לכל העמודים הפנימיים -->
+<nav class="adminnav" id="adminnav" aria-label="עמודים פנימיים">
+  <div class="wrap"><ul class="adminnav__list"></ul></div>
+</nav>
 
 <main class="intake">
   <div class="wrap">
@@ -153,7 +158,8 @@
   </div>
 </footer>
 
-<script src="invoices.js?v=10" defer></script>
+<script src="nav.js?v=11" defer></script>
+<script src="invoices.js?v=11" defer></script>
 
 </body>
 </html>
