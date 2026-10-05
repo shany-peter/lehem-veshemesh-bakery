@@ -780,19 +780,22 @@ a { color: var(--brick); }
   font-family: var(--body);
 }
 
+/* הכפתור צף מעל שלושה רקעים: פשתן, רצועת המשלוחים בצבע לבנה, והפוטר
+   החום הכהה. בצבע לבנה רגיל הוא נעלם ברצועה, ובחום כהה הוא היה נעלם
+   בפוטר. הטבעת הבהירה היא מה שמפריד אותו מכל אחד מהם. */
 .chat__open {
   font-family: var(--body);
   font-size: 1rem;
   font-weight: 600;
   color: var(--paper);
-  background: var(--brick);
-  border: 0;
+  background: var(--brick-deep);
+  border: 2px solid var(--paper);
   border-radius: 999px;
-  padding: 0.8rem 1.4rem;
+  padding: 0.75rem 1.35rem;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(51, 33, 15, 0.22);
+  box-shadow: 0 0 0 1px rgba(124, 58, 29, 0.35), 0 6px 18px rgba(51, 33, 15, 0.35);
 }
-.chat__open:hover { background: var(--brick-deep); }
+.chat__open:hover { background: var(--dark); }
 
 .chat__panel {
   position: fixed;
