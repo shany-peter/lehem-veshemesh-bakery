@@ -96,6 +96,12 @@
   padding: 0.6rem 0.9rem;
 }
 
+/* טעינה ראשונה: אין מה למחוק, ולכן לא בצבע של אזהרה */
+.field__note--first {
+  background: var(--olive-pale);
+  border-right-color: var(--olive);
+}
+
 /* ---------- הקובץ שנבחר ---------- */
 .chosen {
   display: flex;

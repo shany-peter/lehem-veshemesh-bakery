@@ -61,21 +61,27 @@
     'price-list': {
       label:    'מחירון',
       replaces: 'המחירון הנוכחי יימחק, והבוט יענה רק מהקובץ שתעלו כאן.',
+      first:    'אין כרגע מחירון. הבוט יתחיל לענות על מחירים ודמי משלוח ברגע שהקובץ יעלה.',
       action:   'החלפת המחירון',
+      firstAction: 'העלאת המחירון',
       done:     'המחירון עודכן',
       topic:    'מחירים ודמי משלוח'
     },
     'delivery-areas': {
       label:    'אזורי משלוח',
       replaces: 'רשימת אזורי המשלוח הנוכחית תימחק, והבוט יענה רק מהקובץ שתעלו כאן.',
+      first:    'אין כרגע רשימת אזורי משלוח. הבוט יתחיל לענות על אזורי משלוח ברגע שהקובץ יעלה.',
       action:   'החלפת אזורי המשלוח',
+      firstAction: 'העלאת אזורי המשלוח',
       done:     'אזורי המשלוח עודכנו',
       topic:    'אזורי משלוח'
     },
     'policies': {
       label:    'מדיניות',
       replaces: 'מסמך המדיניות הנוכחי יימחק, והבוט יענה רק מהקובץ שתעלו כאן.',
+      first:    'אין כרגע מסמך מדיניות. הבוט יתחיל לענות על הזמנות, ביטולים ושעות ברגע שהקובץ יעלה.',
       action:   'החלפת המדיניות',
+      firstAction: 'העלאת המדיניות',
       done:     'המדיניות עודכנה',
       topic:    'הזמנות, ביטולים ושעות'
     }
@@ -127,6 +133,10 @@
     busy: false,
     wentHidden: false,
     sentAt: 0,
+    /* מה טעון כרגע, מהטבלה. null כשלא הצלחנו לבדוק */
+    known: null,
+    /* האם היה מסמך מהסוג הזה ברגע השליחה: true, false, או null כשלא ידוע */
+    hadDoc: null,
     timer: null
   };
 
@@ -212,6 +222,8 @@
           list.appendChild(knownRow(type, map[type], type === freshType && map[type]));
         });
         knownNote('');
+        state.known = map;
+        refresh();
         return map;
       })
       .catch(function () {
@@ -231,14 +243,27 @@
 
   /* ========================= בחירה ========================= */
 
+  /* true יש מסמך מהסוג הזה, false אין, null לא ידוע.
+     כשלא ידוע מציגים את נוסח ההחלפה: עדיף להזהיר על מחיקה שלא תקרה
+     מאשר להבטיח שאין מה למחוק כשיש. */
+  function hasDoc(type) {
+    if (!state.known) return null;
+    return !!state.known[type];
+  }
+
   function refresh() {
     var t = TYPES[state.type];
     var note = $('type-note');
-    if (t) { note.textContent = t.replaces; note.hidden = false; }
+    var has = hasDoc(state.type);
+    if (t) {
+      note.textContent = has === false ? t.first : t.replaces;
+      note.className = 'field__note' + (has === false ? ' field__note--first' : '');
+      note.hidden = false;
+    }
     else note.hidden = true;
 
     var btn = $('btn-upload');
-    btn.textContent = t ? t.action : 'העלאה';
+    btn.textContent = !t ? 'העלאה' : has === false ? t.firstAction : t.action;
     btn.disabled = !(t && state.file) || state.busy;
   }
 
@@ -311,6 +336,7 @@
     state.busy = true;
     state.wentHidden = document.hidden;
     state.sentAt = Date.now();
+    state.hadDoc = hasDoc(state.type);
     refresh();
 
     show('work');
@@ -387,7 +413,8 @@
     return {
       kind: '', next: 'new',
       title: TYPES[state.type].done,
-      main: 'מעכשיו הבוט עונה רק מהקובץ ' + state.file.name + '. הגרסה הקודמת נמחקה.',
+      main: 'מעכשיו הבוט עונה רק מהקובץ ' + state.file.name + '.' +
+            (state.hadDoc ? ' הגרסה הקודמת נמחקה.' : ''),
       small: small || 'כדאי לשאול את הבוט באתר שאלה אחת מהמסמך החדש ולוודא שהתשובה נכונה.'
     };
   }
