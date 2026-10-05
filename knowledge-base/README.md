@@ -74,7 +74,7 @@
 
 ## עמוד ההעלאה, והחוזה מול n8n
 
-רמי ואיריס מעלים מסמכים מ־[`invoices-ty8knO3/documents.html`](../invoices-ty8knO3/documents.html),
+רמי ואיריס מעלים מסמכים מ־[`internal-ty8knO3/documents.html`](../internal-ty8knO3/documents.html),
 לצד עמוד החשבוניות ובאותו תפריט.
 
 הוורקפלואו ב־n8n: **Lehem veshemesh bakery - KB update** (`IrgKctl3vKjBOGTb`). הבוט עצמו

@@ -82,7 +82,7 @@
   /* מספר הגרסה נקרא מתגית הסקריפט של הקובץ הזה עצמו, ולכן הוא לא יכול
      לשקר: אם הדפדפן מגיש קוד ישן מהמטמון, יוצג המספר הישן. זו הדרך
      היחידה לענות בטלפון על "האם אני רואה את התיקון או את הקוד הישן",
-     בלי כלי פיתוח. מתעדכן לבד עם ?v= ב-index.html. */
+     בלי כלי פיתוח. מתעדכן לבד עם ?v= ב-invoices.html. */
   function showVersion() {
     var tag = document.querySelector('script[src*="invoices.js"]');
     var src = tag ? tag.getAttribute('src') : '';
