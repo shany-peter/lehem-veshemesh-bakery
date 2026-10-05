@@ -77,6 +77,9 @@
 רמי ואיריס מעלים מסמכים מ־[`invoices-ty8knO3/documents.html`](../invoices-ty8knO3/documents.html),
 לצד עמוד החשבוניות ובאותו תפריט.
 
+הוורקפלואו ב־n8n: **Lehem veshemesh bakery - KB update** (`IrgKctl3vKjBOGTb`). הבוט עצמו
+יושב בוורקפלואו נפרד, כדי שעדכון מסמכים ושיחה עם לקוח לא יחלקו קנבס.
+
 ```
 POST https://shanyptr.app.n8n.cloud/webhook/kb-upload
 multipart/form-data
